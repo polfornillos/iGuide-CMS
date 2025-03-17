@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Manage Gallery</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="CMS.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg shadow">
+    <div class="container">
+        <a class="navbar-brand pe-none" href="#">
+            <img src="image assets/iac_logo_w.png" alt="Logo" height="40">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav d-flex" style="gap:20px">
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="News.html">News</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light current-page" href="Gallery.html">Gallery</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="#">Programs</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="#">Partners</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Manage Gallery Section -->
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Manage Gallery</h3>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addGalleryModal"><i class="fas fa-plus"></i> Add </button>    
+    </div>
+
+    <div class="table-responsive table-container p-3 bg-light rounded shadow">
+        <input type="text" id="searchInput" class="form-control mb-3" placeholder="Search...">
+        <table id="galleryTable" class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Student Name</th>
+                    <th>Artwork</th>
+                    <th>Facebook</th>
+                    <th>Twitter</th>
+                    <th>Instagram</th>
+                    <th>Upload Date</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Gallery Modal -->
+<div class="modal fade" id="addGalleryModal" tabindex="-1" aria-labelledby="addGalleryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #10326F; color: white;">
+                <h5 class="modal-title" id="addGalleryModalLabel">Add Gallery Item</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="galleryForm">
+                    <!-- Artwork Image Upload -->
+                    <div class="mb-3 text-center w-100 d-flex justify-content-center align-items-center img-container">
+                        <img id="imagePreview" src="" alt="Image Preview" class="img-thumbnail d-none">
+                        <p id="imagePlaceholder">No image uploaded</p>                    
+                    </div>
+                    <div class="mb-3">
+                        <label for="galleryImage" class="form-label">Upload Artwork</label>
+                        <input type="file" class="form-control" id="galleryImage" accept="image/*" required>
+                    </div>
+
+                    <!-- Title -->
+                    <div class="mb-3">
+                        <label for="galleryTitle" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="galleryTitle" placeholder="Enter title" required>
+                    </div>
+
+                    <!-- Student Name -->
+                    <div class="mb-3">
+                        <label for="studentName" class="form-label">Student Name</label>
+                        <input type="text" class="form-control" id="studentName" placeholder="Enter student name" required>
+                    </div>
+
+                    <!-- Social Media Links -->
+                    <div class="mb-3">
+                        <label for="facebookLink" class="form-label">Facebook Link</label>
+                        <input type="url" class="form-control" id="facebookLink" placeholder="Enter Facebook profile link">
+                    </div>
+                    <div class="mb-3">
+                        <label for="twitterLink" class="form-label">Twitter Link</label>
+                        <input type="url" class="form-control" id="twitterLink" placeholder="Enter Twitter profile link">
+                    </div>
+                    <div class="mb-3">
+                        <label for="instagramLink" class="form-label">Instagram Link</label>
+                        <input type="url" class="form-control" id="instagramLink" placeholder="Enter Instagram profile link">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" id="submitGallery">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Artwork Modal -->
+<div class="modal fade" id="editArtworkModal" tabindex="-1" aria-labelledby="editArtworkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #10326F; color: white;">
+                <h5 class="modal-title" id="editArtworkModalLabel">Edit Artwork</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editArtworkForm">
+                    <input type="hidden" id="editArtworkId">
+                    <div class="mb-3 text-center w-100 d-flex justify-content-center align-items-center img-container">
+                        <img id="editArtworkPreview" src="" alt="Artwork Preview" class="img-thumbnail">
+                        <p id="editArtworkPlaceholder">No image uploaded</p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editArtworkImage" class="form-label">Upload Image</label>
+                        <input type="file" class="form-control" id="editArtworkImage" accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editArtworkTitle" class="form-label">Artwork Title</label>
+                        <input type="text" class="form-control" id="editArtworkTitle" placeholder="Enter artwork title">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editArtworkStudentName" class="form-label">Student Name</label>
+                        <input type="text" class="form-control" id="editArtworkStudentName" placeholder="Enter student's name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editArtworkFacebookLink" class="form-label">Facebook Link</label>
+                        <input type="text" class="form-control" id="editArtworkFacebookLink" placeholder="Enter Facebook link">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editArtworkTwitterLink" class="form-label">Twitter Link</label>
+                        <input type="text" class="form-control" id="editArtworkTwitterLink" placeholder="Enter Twitter link">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editArtworkInstagramLink" class="form-label">Instagram Link</label>
+                        <input type="text" class="form-control" id="editArtworkInstagramLink" placeholder="Enter Instagram link">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" id="saveArtworkChanges">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="js/gallery.js"></script>
+
+</body>
+</html>

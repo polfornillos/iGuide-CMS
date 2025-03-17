@@ -22,7 +22,7 @@ tbody td img{
     width: 100%;
 }
 
-#newsTable tbody tr{
+#newsTable,#galleryTable tbody tr{
     height: 60px;
     vertical-align: middle;
 }
@@ -32,6 +32,7 @@ tbody td img{
 }
 
 h3{
+    font-weight: 600;
     color:#10326F;
 }
 
