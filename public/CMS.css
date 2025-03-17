@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+body,
+html {
+    font-family: "Lexend", sans-serif;
+    font-weight: 300;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+
+body {
+    background-color: #F6F6F6;
+    overflow-x: hidden; /* Prevents horizontal scroll */
+}
+
+tbody{
+    border-bottom-color: transparent !important;
+}
+
+tbody td img{
+    width: 100%;
+}
+
+#newsTable tbody tr{
+    height: 60px;
+    vertical-align: middle;
+}
+
+.dataTables_length, .dataTables_filter {
+    display: none;
+}
+
+h3{
+    color:#10326F;
+}
+
+.container {
+    max-width: 1600px; /* Adjust max margin for the containers */
+    margin: 5px auto; 
+    padding: 0 20px;
+}
+
+.current-page{
+    font-weight: 700;
+}
+
+.navbar{
+    background-color: #10326F;
+}
+
+.navbar-nav .nav-link {
+    position: relative;
+    transition: color 0.3s ease-in-out;
+}
+
+/* Animated underline effect */
+.navbar-nav .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: white;
+    transition: all 0.3s ease-in-out;
+    transform: translateX(-50%);
+}
+
+.navbar-nav .nav-link:hover::after {
+    width: 100%; /* Expands underline on hover */
+}
+
+/* Changes Navbar toggler to white instead of the default black in mobile */
+.navbar-toggler {
+    border-color: white; 
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='3' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+.form-label{
+    font-weight: 600;
+}
+
+.img-thumbnail{
+    background: none;
+    border: none;
+    max-width:100%
+}
+
+.img-container{
+    border: 1px solid #D3D3D3;
+    min-height: 300px;
+}
+
+.table-container{
+    min-height: 700px;
+}
