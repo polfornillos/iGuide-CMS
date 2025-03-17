@@ -80,16 +80,37 @@ app.delete("/news/:id", (req, res) => {
 app.put("/news/:id", upload.single("thumbnail"), (req, res) => {
     const { id } = req.params;
     const { title, description } = req.body;
-    let thumbnail = req.file ? `/Image Assets/News/${req.file.filename}` : null;
+    const newThumbnail = req.file ? `/Image Assets/News/${req.file.filename}` : null;
 
-    let sql = "UPDATE news SET title = ?, description = ?" + (thumbnail ? ", thumbnail = ?" : "") + " WHERE id = ?";
-    let values = thumbnail ? [title, description, thumbnail, id] : [title, description, id];
+    // Step 1: Get the old image before updating the database
+    const getImageSql = "SELECT thumbnail FROM news WHERE id = ?";
+    db.query(getImageSql, [id], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (results.length === 0) return res.status(404).json({ message: "News not found" });
 
-    db.query(sql, values, (err, result) => {
-        if (err) return res.status(500).json({ message: "Failed to update news." });
-        res.json({ message: "News updated successfully." });
+        const oldImagePath = results[0].thumbnail ? `public${results[0].thumbnail}` : null;
+
+        // Step 2: Update the database with the new image
+        let sql = "UPDATE news SET title = ?, description = ?" + (newThumbnail ? ", thumbnail = ?" : "") + " WHERE id = ?";
+        let values = newThumbnail ? [title, description, newThumbnail, id] : [title, description, id];
+
+        db.query(sql, values, (err, result) => {
+            if (err) return res.status(500).json({ message: "Failed to update news." });
+
+            // Step 3: Delete the old image file if a new one was uploaded
+            if (newThumbnail && oldImagePath) {
+                fs.unlink(oldImagePath, (err) => {
+                    if (err && err.code !== "ENOENT") {
+                        console.error("Error deleting old image:", err);
+                    }
+                });
+            }
+
+            res.json({ message: "News updated successfully." });
+        });
     });
 });
+
 
 // Route to fetch a single news item
 app.get('/news/:id', (req, res) => {
