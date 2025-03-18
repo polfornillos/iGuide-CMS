@@ -45,6 +45,7 @@ document.getElementById("partnerLogo").addEventListener("change", function (even
 // Add Partner
 document.getElementById("submitPartner").addEventListener("click", function () {
     let companyName = document.getElementById("partnerName").value.trim();
+    let companyLink = document.getElementById("partnerLink").value.trim();
     let companyLogo = document.getElementById("partnerLogo").files[0];
 
     // Check if fields are empty
@@ -62,6 +63,7 @@ document.getElementById("submitPartner").addEventListener("click", function () {
     let formData = new FormData();
     formData.append("company_name", companyName);
     formData.append("company_logo", companyLogo);
+    formData.append("company_link", companyLink);
 
     fetch("http://localhost:5000/partners/upload", {
         method: "POST",
@@ -105,10 +107,15 @@ function fetchPartners() {
                 let statusPill = item.isDeleted === 1 
                     ? '<span class="badge rounded-pill bg-secondary px-4 py-2" style="font-size:15px">Archived</span>' 
                     : '<span class="badge rounded-pill bg-success px-4 py-2"  style="font-size:15px">Active</span>';
+
+                // Check if the link is available, if not, set it to 'N/A'
+                let partnerLink = item.company_link ? `<a href="${item.company_link}" target="_blank">${item.company_name}</a>` : 'N/A';
+
                 let row = `<tr data-id="${item.id}">
                     <td>${item.id}</td>
                     <td>${item.company_name}</td>
                     <td><img src="${item.company_logo}" width="50"></td>
+                    <td>${partnerLink}</td>
                     <td>${new Date(item.upload_date).toLocaleDateString("en-US", { 
                         year: "numeric", 
                         month: "long", 
@@ -227,6 +234,8 @@ function attachEditEvents() {
                 .then(partner => {
                     document.getElementById("editPartnerId").value = partner.id;
                     document.getElementById("editPartnerName").value = partner.company_name;
+                    document.getElementById("editPartnerLink").value = partner.company_link;
+
                     
                     let imagePreview = document.getElementById("editImagePreview");
                     let imagePlaceholder = document.getElementById("editImagePlaceholder");
@@ -272,6 +281,7 @@ document.getElementById("editPartnerLogo").addEventListener("change", function (
 document.getElementById("savePartnerChanges").addEventListener("click", function () {
     let partnerId = document.getElementById("editPartnerId").value;
     let partnerName = document.getElementById("editPartnerName").value.trim();
+    let partnerLink = document.getElementById("editPartnerLink").value.trim();
 
     // Validation
     if (!partnerName) {
@@ -286,6 +296,7 @@ document.getElementById("savePartnerChanges").addEventListener("click", function
 
     let formData = new FormData();
     formData.append("company_name", partnerName);
+    formData.append("company_link", partnerLink);
 
     let imageFile = document.getElementById("editPartnerLogo").files[0];
     if (imageFile) {

@@ -23,13 +23,13 @@ router.post("/upload", upload.single("company_logo"), (req, res) => {
         return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const { company_name } = req.body;
+    const { company_name, company_link } = req.body;
     const logoUrl = `/Image Assets/Partners/${req.file.filename}`;
     const upload_date = new Date().toISOString().split("T")[0];
     const isDeleted = 0;
 
-    const sql = "INSERT INTO partners (company_name, company_logo, upload_date, isDeleted) VALUES (?, ?, ?, ?)";
-    db.query(sql, [company_name, logoUrl, upload_date, isDeleted], (err, result) => {
+    const sql = "INSERT INTO partners (company_name, company_logo, company_link, upload_date, isDeleted) VALUES (?, ?, ?, ?, ?)";
+    db.query(sql, [company_name, logoUrl, company_link, upload_date, isDeleted], (err, result) => {
         if (err) return res.status(500).json(err);
         res.json({ message: "Partner added successfully", id: result.insertId });
     });
@@ -62,7 +62,7 @@ router.delete("/:id", (req, res) => {
         if (err) return res.status(500).json(err);
         if (results.length === 0) return res.status(404).json({ message: "Partner not found" });
 
-        const imagePath = "public" + results[0].logo;
+        const imagePath = "public" + results[0].company_logo;
         db.query("DELETE FROM partners WHERE id = ?", [partnerId], (err) => {
             if (err) return res.status(500).json(err);
             fs.unlink(imagePath, (err) => {
@@ -78,7 +78,7 @@ router.delete("/:id", (req, res) => {
 // Update Partner
 router.put("/:id", upload.single("company_logo"), (req, res) => {
     const { id } = req.params;
-    const { company_name } = req.body;
+    const { company_name, company_link } = req.body;
     const newLogo = req.file ? `/Image Assets/Partners/${req.file.filename}` : null;
 
     db.query("SELECT company_logo FROM partners WHERE id = ?", [id], (err, results) => {
@@ -86,8 +86,8 @@ router.put("/:id", upload.single("company_logo"), (req, res) => {
         if (results.length === 0) return res.status(404).json({ message: "Partner not found" });
 
         const oldImagePath = results[0].company_logo ? `public${results[0].company_logo}` : null;
-        let sql = "UPDATE partners SET company_name = ?" + (newLogo ? ", company_logo = ?" : "") + " WHERE id = ?";
-        let values = newLogo ? [company_name, newLogo, id] : [company_name, id];
+        let sql = "UPDATE partners SET company_name = ?, company_link = ?" + (newLogo ? ", company_logo = ?" : "") + " WHERE id = ?";
+        let values = newLogo ? [company_name, company_link, newLogo, id] : [company_name, company_link, id];
 
         db.query(sql, values, (err) => {
             if (err) return res.status(500).json({ message: "Failed to update partner." });
