@@ -21,7 +21,7 @@ document.getElementById("searchInput").addEventListener("keyup", function () {
 });
 
 // Updates image preview when a file is selected
-document.getElementById("galleryForm").addEventListener("change", function (event) {
+document.getElementById("artworkForm").addEventListener("change", function (event) {
     const imagePreview = document.getElementById("imagePreview");
     const imagePlaceholder = document.getElementById("imagePlaceholder");
     
@@ -43,13 +43,13 @@ document.getElementById("galleryForm").addEventListener("change", function (even
 });
 
 // Add artwork
-document.getElementById("submitGallery").addEventListener("click", function () {
-    let title = document.getElementById("galleryTitle").value.trim();
+document.getElementById("submitArtwork").addEventListener("click", function () {
+    let title = document.getElementById("artworkTitle").value.trim();
     let studentName = document.getElementById("studentName").value.trim();
     let facebookLink = document.getElementById("facebookLink").value.trim();
     let twitterLink = document.getElementById("twitterLink").value.trim();
     let instagramLink = document.getElementById("instagramLink").value.trim();
-    let image = document.getElementById("galleryImage").files[0];
+    let image = document.getElementById("artworkImage").files[0];
 
     if (!title || !studentName || !image) {
         Swal.fire({
@@ -79,7 +79,7 @@ document.getElementById("submitGallery").addEventListener("click", function () {
         if (data.message) {
             Swal.fire({
                 title: "Success!",
-                text: "Gallery item has been added successfully.",
+                text: "Artwork has been added successfully.",
                 icon: "success",
                 timer: 1500,
                 showConfirmButton: false
@@ -91,7 +91,7 @@ document.getElementById("submitGallery").addEventListener("click", function () {
     .catch(error => {
         Swal.fire({
             title: "Error!",
-            text: "Failed to add gallery item. Please try again.",
+            text: "Failed to add artwork. Please try again.",
             icon: "error",
             iconColor: "#d33",
             confirmButtonColor: "#10326F"
@@ -136,11 +136,11 @@ function fetchArtworks() {
                         <button class="btn btn-sm btn-warning edit-btn" data-id="${item.id}" data-bs-toggle="modal" data-bs-target="#editArtworkModal">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-sm btn-danger delete-btn" data-id="${item.id}">
-                            <i class="fas fa-trash"></i>
-                        </button>
                         <button class="btn btn-sm ${item.isDeleted === 1 ? "btn-success" : "btn-secondary"} archive-btn" data-id="${item.id}" data-isDeleted="${item.isDeleted}">
                             ${item.isDeleted === 1 ? '<i class="fas fa-undo"></i>' : '<i class="fas fa-box"></i>'}
+                        </button>
+                          <button class="btn btn-sm btn-danger delete-btn" data-id="${item.id}" ${item.isDeleted === 0 ? "disabled" : ""}>
+                            <i class="fas fa-trash"></i>
                         </button>
                     </td>
                 </tr>`;

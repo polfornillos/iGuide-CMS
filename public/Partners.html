@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Manage News</title>
+    <title>Manage Partners</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -23,7 +23,7 @@
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="navbar-nav d-flex" style="gap:20px">
                 <li class="nav-item">
-                    <a class="nav-link text-light current-page" href="#">News</a>
+                    <a class="nav-link text-light" href="News.html">News</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-light" href="Gallery.html">Gallery</a>
@@ -32,30 +32,29 @@
                     <a class="nav-link text-light" href="Programs.html">Programs</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-light" href="Partners.html">Partners</a>
+                    <a class="nav-link text-light current-page" href="#">Partners</a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
 
-<!-- Manage News Section -->
+<!-- Manage Partners Section -->
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="mb-0">Manage News</h3>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNewsModal"><i class="fas fa-plus"></i> Add </button>    
+        <h3 class="mb-0">Manage Partners</h3>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPartnerModal"><i class="fas fa-plus"></i> Add </button>    
     </div>
 
     <div class="table-responsive table-container p-3 bg-light rounded shadow">
         <input type="text" id="searchInput" class="form-control mb-3" placeholder="Search...">
-        <table id="newsTable" class="table">
+        <table id="partnersTable" class="table">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Title</th>
-                    <th>Thumbnail</th>
+                    <th>Company Name</th>
+                    <th>Company Logo</th>
                     <th>Upload Date</th>
-                    <th>Description</th>
                     <th class="text-center">Status</th>
                     <th class="text-center">Actions</th>
                 </tr>
@@ -66,79 +65,70 @@
     </div>
 </div>
 
-<!-- News Modal -->
-<div class="modal fade" id="addNewsModal" tabindex="-1" aria-labelledby="addNewsModalLabel" aria-hidden="true">
+<!-- Add Partner Modal -->
+<div class="modal fade" id="addPartnerModal" tabindex="-1" aria-labelledby="addPartnerModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header" style="background-color: #10326F; color: white;">
-                <h5 class="modal-title" id="addNewsModalLabel">Add News</h5>
+                <h5 class="modal-title" id="addPartnerModalLabel">Add Partner</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="newsForm">
+                <form id="partnerForm">
                     <div class="mb-3 text-center w-100 d-flex justify-content-center align-items-center img-container">
-                        <img id="imagePreview" src="" alt="Image Preview" class="img-thumbnail d-none">
-                        <p id="imagePlaceholder">No image uploaded</p>                    
+                        <img id="imagePreview" src="" alt="Logo Preview" class="img-thumbnail d-none">
+                        <p id="imagePlaceholder">No logo uploaded</p>                    
                     </div>
                     <div class="mb-3">
-                        <label for="newsImage" class="form-label">Upload Image</label>
-                        <input type="file" class="form-control" id="newsImage" accept="image/*" required>
+                        <label for="partnerLogo" class="form-label">Upload Logo</label>
+                        <input type="file" class="form-control" id="partnerLogo" accept="image/*" required>
                     </div>
                     <div class="mb-3">
-                        <label for="newsTitle" class="form-label">News Title</label>
-                        <input type="text" class="form-control" id="newsTitle" placeholder="Enter news title" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="newsDescription" class="form-label">News Description</label>
-                        <textarea class="form-control" id="newsDescription" rows="4" placeholder="Enter news description" required></textarea>
+                        <label for="partnerName" class="form-label">Company Name</label>
+                        <input type="text" class="form-control" id="partnerName" placeholder="Enter company name" required>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary" id="submitNews">Submit</button>
+                <button type="submit" class="btn btn-primary" id="submitPartner">Submit</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Edit News Modal -->
-<div class="modal fade" id="editNewsModal" tabindex="-1" aria-labelledby="editNewsModalLabel" aria-hidden="true">
+<!-- Edit Partner Modal -->
+<div class="modal fade" id="editPartnerModal" tabindex="-1" aria-labelledby="editPartnerModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header" style="background-color: #10326F; color: white;">
-                <h5 class="modal-title" id="editNewsModalLabel">Edit News</h5>
+                <h5 class="modal-title" id="editPartnerModalLabel">Edit Partner</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="editNewsForm">
-                    <input type="hidden" id="editNewsId">
+                <form id="editPartnerForm">
+                    <input type="hidden" id="editPartnerId">
                     <div class="mb-3 text-center w-100 d-flex justify-content-center align-items-center img-container">
-                        <img id="editImagePreview" src="" alt="Image Preview" class="img-thumbnail">
-                        <p id="editImagePlaceholder">No image uploaded</p>
+                        <img id="editImagePreview" src="" alt="Logo Preview" class="img-thumbnail">
+                        <p id="editImagePlaceholder">No logo uploaded</p>
                     </div>
                     <div class="mb-3">
-                        <label for="editNewsImage" class="form-label">Upload Image</label>
-                        <input type="file" class="form-control" id="editNewsImage" accept="image/*">
+                        <label for="editPartnerLogo" class="form-label">Upload Logo</label>
+                        <input type="file" class="form-control" id="editPartnerLogo" accept="image/*">
                     </div>
                     <div class="mb-3">
-                        <label for="editNewsTitle" class="form-label">News Title</label>
-                        <input type="text" class="form-control" id="editNewsTitle" placeholder="Enter news title">
-                    </div>
-                    <div class="mb-3">
-                        <label for="editNewsDescription" class="form-label">News Description</label>
-                        <textarea class="form-control" id="editNewsDescription" rows="4" placeholder="Enter news description"></textarea>
+                        <label for="editPartnerName" class="form-label">Company Name</label>
+                        <input type="text" class="form-control" id="editPartnerName" placeholder="Enter company name">
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary" id="saveNewsChanges">Save Changes</button>
+                <button type="submit" class="btn btn-primary" id="savePartnerChanges">Save Changes</button>
             </div>
         </div>
     </div>
 </div>
-
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -146,7 +136,7 @@
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="js/news.js"></script>
+<script src="js/partners.js"></script>
 
 </body>
 </html>

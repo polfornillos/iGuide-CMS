@@ -12,12 +12,15 @@ app.use(express.static('public'));
 const newsRoutes = require('./routes/newsRoutes');
 const artworkRoutes = require('./routes/artworkRoutes');
 const programsRoutes = require('./routes/programsRoutes');
+const partnersRoutes = require('./routes/partnersRoutes');
 
 
 // Use routes
 app.use('/news', newsRoutes);
 app.use('/artworks', artworkRoutes);
 app.use('/programs', programsRoutes);
+app.use('/partners', partnersRoutes);
+
 
 
 app.listen(5000, () => {

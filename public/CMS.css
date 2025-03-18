@@ -22,7 +22,7 @@ tbody td img{
     width: 100%;
 }
 
-#newsTable,#galleryTable,#programsTable tbody tr{
+#newsTable,#galleryTable,#programsTable,#partnersTable tbody tr{
     height: 60px;
     vertical-align: middle;
 }
