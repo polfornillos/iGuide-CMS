@@ -56,6 +56,10 @@
                     <th>Program Name</th>
                     <th>Specialization</th>
                     <th>Program Description</th>
+                    <th>Number of Terms</th>
+                    <th>Duration</th>
+                    <th>Internship</th>
+                    <th>Careers</th>
                     <th>Cover Image</th>
                     <th>Upload Date</th>
                     <th class="text-center">Status</th>
@@ -116,6 +120,22 @@
                         <label for="programDescription" class="form-label">Program Description</label>
                         <textarea class="form-control" id="programDescription" placeholder="Enter program description" rows="3" required></textarea>
                     </div>
+                    <div class="mb-3">
+                        <label for="numberOfTerms" class="form-label">Number of Terms</label>
+                        <input type="number" class="form-control" id="numberOfTerms" placeholder="Enter number of terms" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="duration" class="form-label">Duration</label>
+                        <input type="text" class="form-control" id="programDuration" placeholder="Enter duration" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="internship" class="form-label">Internship</label>
+                        <input type="text" class="form-control" id="internshipDuration" placeholder="Enter internship details" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="careers" class="form-label">Careers</label>
+                        <input type="text" class="form-control" id="careerOpportunities" placeholder="Enter career opportunities" required>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -174,6 +194,25 @@
                     <div class="mb-3">
                         <label for="editProgramDescription" class="form-label">Program Description</label>
                         <textarea class="form-control" id="editProgramDescription" placeholder="Enter program description" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editNumberOfTerms" class="form-label">Number of Terms</label>
+                        <input type="number" class="form-control" id="editNumberOfTerms" placeholder="Enter number of terms" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="editProgramDuration" class="form-label">Duration</label>
+                        <input type="text" class="form-control" id="editProgramDuration" placeholder="Enter duration (e.g., 4 years)" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="editInternshipDetails" class="form-label">Internship</label>
+                        <textarea class="form-control" id="editInternshipDuration" placeholder="Enter internship details" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="editCareerOpportunities" class="form-label">Career Opportunities</label>
+                        <textarea class="form-control" id="editCareerOpportunities" placeholder="Enter potential careers" rows="3" required></textarea>
                     </div>
                 </form>
             </div>

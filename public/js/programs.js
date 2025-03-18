@@ -5,7 +5,7 @@ $(document).ready(function() {
         info: false,    // Remove "Showing X of X entries"
         searching: false, // Remove search bar
         lengthChange: false, // Remove "Show entries" dropdown
-        ordering: false
+        ordering: false,
     });
 });
 
@@ -68,8 +68,12 @@ document.getElementById("submitProgram").addEventListener("click", function () {
     let programName = document.getElementById("programName").value.trim();
     let programSpecialization = document.getElementById("programSpecialization").value.trim();
     let programDescription = document.getElementById("programDescription").value.trim();
+    let numberOfTerms = document.getElementById("numberOfTerms").value.trim();
+    let duration = document.getElementById("programDuration").value.trim();
+    let internship = document.getElementById("internshipDuration").value.trim();
+    let careers = document.getElementById("careerOpportunities").value.trim();
 
-    if (!coverImage || !departmentName || !programSpecialization || !programDescription) {
+    if (!coverImage || !departmentName || !programName || !programSpecialization || !programDescription || !numberOfTerms || !duration || !internship || !careers) {
         Swal.fire({
             title: "Warning!",
             text: "All fields are required.",
@@ -86,6 +90,10 @@ document.getElementById("submitProgram").addEventListener("click", function () {
     formData.append("program_name", programName);
     formData.append("program_specialization", programSpecialization);
     formData.append("program_description", programDescription);
+    formData.append("number_of_terms", numberOfTerms);
+    formData.append("duration", duration);
+    formData.append("internship", internship);
+    formData.append("careers", careers);
 
     fetch("http://localhost:5000/programs/upload", {
         method: "POST",
@@ -117,6 +125,7 @@ document.getElementById("submitProgram").addEventListener("click", function () {
     });
 });
 
+
 // Fetch and display programs
 function fetchPrograms() {
     fetch("http://localhost:5000/programs")
@@ -129,12 +138,17 @@ function fetchPrograms() {
                 let statusPill = item.isDeleted === 1 
                 ? '<span class="badge rounded-pill bg-secondary px-4 py-2" style="font-size:15px">Archived</span>' 
                 : '<span class="badge rounded-pill bg-success px-4 py-2"  style="font-size:15px">Active</span>';
+                
                 let row = `<tr data-id="${item.id}">
                     <td>${item.id}</td>
                     <td>${item.department_name}</td>
                     <td>${item.program_name}</td>
                     <td>${item.program_specialization}</td>
                     <td>${item.program_description}</td>
+                    <td>${item.number_of_terms}</td>
+                    <td>${item.duration}</td>
+                    <td>${item.internship}</td>
+                    <td>${item.careers}</td>
                     <td><img src="${item.cover_image}" width="50"></td>
                     <td>${new Date(item.upload_date).toLocaleDateString("en-US", { 
                         year: "numeric", 
@@ -143,13 +157,13 @@ function fetchPrograms() {
                     })}</td>
                     <td class="text-center">${statusPill}</td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-warning edit-btn" data-id="${item.id}" data-bs-toggle="modal" data-bs-target="#editNewsModal">
+                        <button class="btn btn-sm btn-warning edit-btn my-1" data-id="${item.id}" data-bs-toggle="modal" data-bs-target="#editProgramModal">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-sm ${item.isDeleted === 1 ? "btn-success" : "btn-secondary"} archive-btn" data-id="${item.id}" data-isDeleted="${item.isDeleted}">
+                        <button class="btn btn-sm ${item.isDeleted === 1 ? "btn-success" : "btn-secondary"} archive-btn my-1" data-id="${item.id}" data-isDeleted="${item.isDeleted}">
                             ${item.isDeleted === 1 ? '<i class="fas fa-undo"></i>' : '<i class="fas fa-box"></i>'}
                         </button>
-                          <button class="btn btn-sm btn-danger delete-btn" data-id="${item.id}" ${item.isDeleted === 0 ? "disabled" : ""}>
+                          <button class="btn btn-sm btn-danger delete-btn my-1" data-id="${item.id}" ${item.isDeleted === 0 ? "disabled" : ""}>
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
@@ -163,6 +177,7 @@ function fetchPrograms() {
         })
         .catch(error => console.error("Error fetching programs:", error));
 }
+
 
 // Delete programs based on ID
 function attachDeleteEvents() {
@@ -309,9 +324,12 @@ document.getElementById("saveProgramChanges").addEventListener("click", function
     let programName = document.getElementById("editProgramName").value.trim();
     let programSpecialization = document.getElementById("editProgramSpecialization").value.trim();
     let programDescription = document.getElementById("editProgramDescription").value.trim();
+    let numberOfTerms = document.getElementById("editNumberOfTerms").value.trim();
+    let duration = document.getElementById("editProgramDuration").value.trim();
+    let internship = document.getElementById("editInternshipDuration").value.trim();
+    let careers = document.getElementById("editCareerOpportunities").value.trim();
 
-    // Validation
-    if (!departmentName || !programName || !programSpecialization || !programDescription) {
+    if (!departmentName || !programName || !programSpecialization || !programDescription || !numberOfTerms || !duration || !internship || !careers) {
         Swal.fire({
             title: "Warning!",
             text: "Please fill in all the required fields.",
@@ -326,6 +344,10 @@ document.getElementById("saveProgramChanges").addEventListener("click", function
     formData.append("program_name", programName);
     formData.append("program_specialization", programSpecialization);
     formData.append("program_description", programDescription);
+    formData.append("number_of_terms", numberOfTerms);
+    formData.append("duration", duration);
+    formData.append("internship", internship);
+    formData.append("careers", careers);
 
     let imageFile = document.getElementById("editCoverImage").files[0];
     if (imageFile) {
@@ -350,10 +372,10 @@ document.getElementById("saveProgramChanges").addEventListener("click", function
                 let modalInstance = bootstrap.Modal.getInstance(editModal);
             
                 if (modalInstance) {
-                    modalInstance.hide(); // Properly hide the modal
+                    modalInstance.hide(); 
                 }
             
-                fetchPrograms(); // Refresh program list
+                fetchPrograms(); 
             });
         }
     })

@@ -31,6 +31,7 @@ router.post("/upload", upload.single("thumbnail"), (req, res) => {
     const sql = "INSERT INTO news (title, description, thumbnail, upload_date, isDeleted) VALUES (?, ?, ?, ?, ?)";
     db.query(sql, [title, description, thumbnailUrl, upload_date, isDeleted], (err, result) => {
         if (err) return res.status(500).json(err);
+
         res.json({ message: "News added successfully", id: result.insertId });
     });
 });

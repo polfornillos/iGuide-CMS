@@ -119,13 +119,13 @@ function fetchNews() {
                     })}</td>                    
                     <td class="text-center">${statusPill}</td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-warning edit-btn" data-id="${item.id}" data-bs-toggle="modal" data-bs-target="#editNewsModal">
+                        <button class="btn btn-sm btn-warning edit-btn my-1" data-id="${item.id}" data-bs-toggle="modal" data-bs-target="#editNewsModal">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-sm ${item.isDeleted === 1 ? "btn-success" : "btn-secondary"} archive-btn" data-id="${item.id}" data-isDeleted="${item.isDeleted}">
+                        <button class="btn btn-sm ${item.isDeleted === 1 ? "btn-success" : "btn-secondary"} archive-btn my-1" data-id="${item.id}" data-isDeleted="${item.isDeleted}">
                             ${item.isDeleted === 1 ? '<i class="fas fa-undo"></i>' : '<i class="fas fa-box"></i>'}
                         </button>
-                          <button class="btn btn-sm btn-danger delete-btn" data-id="${item.id}" ${item.isDeleted === 0 ? "disabled" : ""}>
+                          <button class="btn btn-sm btn-danger delete-btn my-1" data-id="${item.id}" ${item.isDeleted === 0 ? "disabled" : ""}>
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>

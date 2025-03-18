@@ -23,12 +23,12 @@ router.post("/upload", upload.single("cover_image"), (req, res) => {
         return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const { department_name, program_name, program_specialization, program_description } = req.body;
+    const { department_name, program_name, program_specialization, program_description, number_of_terms, duration, internship, careers } = req.body;
     const cover_image = `/Image Assets/Programs/${req.file.filename}`;
     const upload_date = new Date().toISOString().split("T")[0];
 
-    const sql = "INSERT INTO programs (program_name, department_name, program_specialization, program_description, cover_image, upload_date) VALUES (?, ?, ?, ?, ?, ?)";
-    db.query(sql, [program_name, department_name, program_specialization, program_description, cover_image, upload_date], (err, result) => {
+    const sql = "INSERT INTO programs (program_name, department_name, program_specialization, program_description, number_of_terms, duration, internship, careers, cover_image, upload_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    db.query(sql, [program_name, department_name, program_specialization, program_description, number_of_terms, duration, internship, careers, cover_image, upload_date], (err, result) => {
         if (err) return res.status(500).json(err);
         res.json({ message: "Program added successfully", id: result.insertId });
     });
@@ -44,11 +44,11 @@ router.get("/", (req, res) => {
 
 // Get Single Program
 router.get("/:id", (req, res) => {
-    const newsId = req.params.id;
+    const programId = req.params.id;
     const sql = "SELECT * FROM programs WHERE id = ?";
-    db.query(sql, [newsId], (err, results) => {
+    db.query(sql, [programId], (err, results) => {
         if (err) return res.status(500).json(err);
-        if (results.length === 0) return res.status(404).json({ message: "News not found" });
+        if (results.length === 0) return res.status(404).json({ message: "Program not found" });
 
         res.json(results[0]);
     });
@@ -77,7 +77,7 @@ router.delete("/:id", (req, res) => {
 // Update Program
 router.put("/:id", upload.single("cover_image"), (req, res) => {
     const { id } = req.params;
-    const { department_name, program_name, program_specialization, program_description } = req.body;
+    const { department_name, program_name, program_specialization, program_description, number_of_terms, duration, internship, careers } = req.body;
     const newCoverImage = req.file ? `/Image Assets/Programs/${req.file.filename}` : null;
 
     db.query("SELECT cover_image FROM programs WHERE id = ?", [id], (err, results) => {
@@ -85,10 +85,10 @@ router.put("/:id", upload.single("cover_image"), (req, res) => {
         if (results.length === 0) return res.status(404).json({ message: "Program not found" });
 
         const oldImagePath = results[0].cover_image ? `public${results[0].cover_image}` : null;
-        let sql = "UPDATE programs SET department_name = ?, program_name = ?, program_specialization = ?, program_description = ?" +
+        let sql = "UPDATE programs SET department_name = ?, program_name = ?, program_specialization = ?, program_description = ?, number_of_terms = ?, duration = ?, internship = ?, careers = ?" +
                   (newCoverImage ? ", cover_image = ?" : "") + " WHERE id = ?";
-        let values = newCoverImage ? [department_name, program_name, program_specialization, program_description, newCoverImage, id] : 
-                                     [department_name, program_name, program_specialization, program_description, id];
+        let values = newCoverImage ? [department_name, program_name, program_specialization, program_description, number_of_terms, duration, internship, careers, newCoverImage, id] : 
+                                     [department_name, program_name, program_specialization, program_description, number_of_terms, duration, internship, careers, id];
 
         db.query(sql, values, (err) => {
             if (err) return res.status(500).json({ message: "Failed to update program." });
@@ -114,6 +114,5 @@ router.put("/:id/archive", (req, res) => {
         res.json({ message: "Program updated successfully" });
     });
 });
-
 
 module.exports = router;
