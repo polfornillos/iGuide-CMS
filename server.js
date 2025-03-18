@@ -11,10 +11,14 @@ app.use(express.static('public'));
 // Import routes
 const newsRoutes = require('./routes/newsRoutes');
 const artworkRoutes = require('./routes/artworkRoutes');
+const programsRoutes = require('./routes/programsRoutes');
+
 
 // Use routes
 app.use('/news', newsRoutes);
 app.use('/artworks', artworkRoutes);
+app.use('/programs', programsRoutes);
+
 
 app.listen(5000, () => {
     console.log('Server running on port 5000');

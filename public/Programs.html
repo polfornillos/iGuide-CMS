@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Manage Programs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="CMS.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg shadow">
+    <div class="container">
+        <a class="navbar-brand pe-none" href="#">
+            <img src="image assets/iac_logo_w.png" alt="Logo" height="40">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav d-flex" style="gap:20px">
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="News.html">News</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="Gallery.html">Gallery</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light current-page" href="Programs.html">Programs</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="#">Partners</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Manage Programs Section -->
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Manage Programs</h3>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProgramModal"><i class="fas fa-plus"></i> Add </button>    
+    </div>
+
+    <div class="table-responsive table-container p-3 bg-light rounded shadow">
+        <input type="text" id="searchInput" class="form-control mb-3" placeholder="Search...">
+        <table id="programsTable" class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Department Name</th>
+                    <th>Program Name</th>
+                    <th>Specialization</th>
+                    <th>Program Description</th>
+                    <th>Cover Image</th>
+                    <th>Upload Date</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Program Modal -->
+<div class="modal fade" id="addProgramModal" tabindex="-1" aria-labelledby="addProgramModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #10326F; color: white;">
+                <h5 class="modal-title" id="addProgramModalLabel">Add Program</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="programForm">
+                    <div class="mb-3 text-center w-100 d-flex justify-content-center align-items-center img-container">
+                        <img id="imagePreview" src="" alt="Image Preview" class="img-thumbnail d-none">
+                        <p id="imagePlaceholder">No image uploaded</p>                    
+                    </div>
+                    <div class="mb-3">
+                        <label for="coverImage" class="form-label">Upload Program Image</label>
+                        <input type="file" class="form-control" id="coverImage" accept="image/*" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="departmentName" class="form-label">Department Name</label>
+                        <select class="form-control" id="departmentName" required>
+                            <option value="" disabled selected>Select department</option>
+                            <option value="School of Computing">School of Computing</option>
+                            <option value="School of Business and Arts">School of Business and Arts</option>
+                            <option value="School of Design and the Arts">School of Design and the Arts</option>
+                            <option value="Senior High School">Senior High School</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="programName" class="form-label">Program Name</label>
+                        <select class="form-control" id="programName" required>
+                            <option value="" disabled selected>Select program</option>
+                            <option value="Bachelor of Science in Entertainment and Media Computing">Bachelor of Science in Entertainment and Media Computing</option>
+                            <option value="Bachelor of Science in Computer Science">Bachelor of Science in Computer Science</option>
+                            <option value="Bachelor of Science in Information Technology">Bachelor of Science in Information Technology</option>
+                            <option value="Bachelor of Science in Business Administration">Bachelor of Science in Business Administration</option>
+                            <option value="Bachelor of Science">Bachelor of Science</option>
+                            <option value="Bachelor of Arts">Bachelor of Arts</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="programSpecialization" class="form-label">Specialization</label>
+                        <input type="text" class="form-control" id="programSpecialization" placeholder="Enter specialization" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="programDescription" class="form-label">Program Description</label>
+                        <textarea class="form-control" id="programDescription" placeholder="Enter program description" rows="3" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" id="submitProgram">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Program Modal -->
+<div class="modal fade" id="editProgramModal" tabindex="-1" aria-labelledby="editProgramModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #10326F; color: white;">
+                <h5 class="modal-title" id="editProgramModalLabel">Edit Program</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editProgramForm">
+                    <input type="hidden" id="editProgramId">
+                    <div class="mb-3 text-center w-100 d-flex justify-content-center align-items-center img-container">
+                        <img id="editProgramPreview" src="" alt="Program Image Preview" class="img-thumbnail d-none">
+                        <p id="editProgramPlaceholder">No image uploaded</p>                    
+                    </div>
+                    <div class="mb-3">
+                        <label for="editCoverImage" class="form-label">Upload Program Image</label>
+                        <input type="file" class="form-control" id="editCoverImage" accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDepartmentName" class="form-label">Department Name</label>
+                        <select class="form-control" id="editDepartmentName" required>
+                            <option value="" disabled selected>Select department</option>
+                            <option value="School of Computing">School of Computing</option>
+                            <option value="School of Business and Arts">School of Business and Arts</option>
+                            <option value="School of Design and the Arts">School of Design and the Arts</option>
+                            <option value="Senior High School">Senior High School</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editProgramName" class="form-label">Program Name</label>
+                        <select class="form-control" id="editProgramName" required>
+                            <option value="" disabled selected>Select program</option>
+                            <option value="Bachelor of Science in Entertainment and Media Computing">Bachelor of Science in Entertainment and Media Computing</option>
+                            <option value="Bachelor of Science in Computer Science">Bachelor of Science in Computer Science</option>
+                            <option value="Bachelor of Science in Information Technology">Bachelor of Science in Information Technology</option>
+                            <option value="Bachelor of Science in Business Administration">Bachelor of Science in Business Administration</option>
+                            <option value="Bachelor of Science">Bachelor of Science</option>
+                            <option value="Bachelor of Arts">Bachelor of Arts</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editProgramSpecialization" class="form-label">Specialization</label>
+                        <input type="text" class="form-control" id="editProgramSpecialization" placeholder="Enter specialization" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editProgramDescription" class="form-label">Program Description</label>
+                        <textarea class="form-control" id="editProgramDescription" placeholder="Enter program description" rows="3" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" id="saveProgramChanges">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="js/programs.js"></script>
+
+</body>
+</html>

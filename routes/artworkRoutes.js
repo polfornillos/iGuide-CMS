@@ -36,7 +36,6 @@ router.post("/upload", upload.single("artwork"), (req, res) => {
     });
 });
 
-
 // Get All Artworks
 router.get("/", (req, res) => {
     db.query("SELECT * FROM artworks", (err, results) => {
