@@ -272,6 +272,13 @@ function attachEditEvents() {
                     document.getElementById("editProgramName").value = program.program_name;
                     document.getElementById("editProgramSpecialization").value = program.program_specialization;
                     document.getElementById("editProgramDescription").value = program.program_description;
+                    document.getElementById("editNumberOfTerms").value = program.number_of_terms;
+                    document.getElementById("editProgramDuration").value = program.duration;
+                    document.getElementById("editInternshipDuration").value = program.internship;
+                    document.getElementById("editCareerOpportunities").value = program.careers;
+
+
+                    
 
                     let imagePreview = document.getElementById("editProgramPreview");
                     let imagePlaceholder = document.getElementById("editProgramPlaceholder");
@@ -370,12 +377,17 @@ document.getElementById("saveProgramChanges").addEventListener("click", function
             }).then(() => {
                 let editModal = document.getElementById("editProgramModal");
                 let modalInstance = bootstrap.Modal.getInstance(editModal);
-            
+
                 if (modalInstance) {
-                    modalInstance.hide(); 
+                    modalInstance.hide();
                 }
+
+                document.querySelectorAll(".modal-backdrop").forEach(backdrop => backdrop.remove());
+                document.body.classList.remove("modal-open");
+                document.body.style = "";
             
                 fetchPrograms(); 
+                document.getElementById("editProgramModal").querySelector(".btn-close").click();
             });
         }
     })
