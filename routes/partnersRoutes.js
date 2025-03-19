@@ -43,6 +43,21 @@ router.get("/", (req, res) => {
     });
 });
 
+// Get All Active Partners
+router.get("/active", (req, res) => {
+    db.query("SELECT company_logo, company_link FROM partners WHERE isDeleted = 0", (err, results) => {
+        if (err) return res.status(500).json(err);
+
+        // Format the results to add base URL to the logo
+        const formattedResults = results.map(partner => ({
+            company_logo: `http://localhost:5000${partner.company_logo}`,
+            company_link: partner.company_link
+        }));
+
+        res.json(formattedResults);
+    });
+});
+
 // Get Single Partner
 router.get("/:id", (req, res) => {
     const partnerId = req.params.id;
