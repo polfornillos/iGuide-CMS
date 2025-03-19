@@ -9,7 +9,7 @@ const router = express.Router();
 // Set up Multer storage for partners
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, "public/Image Assets/Partners");
+        cb(null, "public/image_assets/Partners");
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + path.extname(file.originalname));
@@ -24,7 +24,7 @@ router.post("/upload", upload.single("company_logo"), (req, res) => {
     }
 
     const { company_name, company_link } = req.body;
-    const logoUrl = `/Image Assets/Partners/${req.file.filename}`;
+    const logoUrl = `/image_assets/Partners/${req.file.filename}`;
     const upload_date = new Date().toISOString().split("T")[0];
     const isDeleted = 0;
 
@@ -79,7 +79,7 @@ router.delete("/:id", (req, res) => {
 router.put("/:id", upload.single("company_logo"), (req, res) => {
     const { id } = req.params;
     const { company_name, company_link } = req.body;
-    const newLogo = req.file ? `/Image Assets/Partners/${req.file.filename}` : null;
+    const newLogo = req.file ? `/image_assets/Partners/${req.file.filename}` : null;
 
     db.query("SELECT company_logo FROM partners WHERE id = ?", [id], (err, results) => {
         if (err) return res.status(500).json(err);

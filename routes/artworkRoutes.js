@@ -9,7 +9,7 @@ const router = express.Router();
 // Set up Multer storage for artworks
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/Image Assets/Artworks');
+        cb(null, 'public/image_assets/Artworks');
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + path.extname(file.originalname));
@@ -24,7 +24,7 @@ router.post("/upload", upload.single("artwork"), (req, res) => {
     }
 
     const { title, student_name, facebook_link, twitter_link, instagram_link } = req.body;
-    const artwork = `/Image Assets/Artworks/${req.file.filename}`;
+    const artwork = `/image_assets/Artworks/${req.file.filename}`;
     const upload_date = new Date().toISOString().split("T")[0];
     const isDeletedValue = 0;
 
@@ -79,7 +79,7 @@ router.delete("/:id", (req, res) => {
 router.put("/:id", upload.single("artwork"), (req, res) => {
     const { id } = req.params;
     const { title, student_name, facebook_link, twitter_link, instagram_link } = req.body;
-    const newArtwork = req.file ? `/Image Assets/Artworks/${req.file.filename}` : null;
+    const newArtwork = req.file ? `/image_assets/Artworks/${req.file.filename}` : null;
 
     // Query to get the current artwork details
     db.query("SELECT artwork FROM artworks WHERE id = ?", [id], (err, results) => {

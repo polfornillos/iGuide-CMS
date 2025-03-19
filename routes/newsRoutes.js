@@ -9,7 +9,7 @@ const router = express.Router();
 // Set up Multer storage for news
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/Image Assets/News');
+        cb(null, 'public/image_assets/News');
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + path.extname(file.originalname));
@@ -24,7 +24,7 @@ router.post("/upload", upload.single("thumbnail"), (req, res) => {
     }
 
     const { title, description } = req.body;
-    const thumbnailUrl = `/Image Assets/News/${req.file.filename}`;
+    const thumbnailUrl = `/image_assets/News/${req.file.filename}`;
     const upload_date = new Date().toISOString().split("T")[0];
     const isDeleted = 0;
 
@@ -80,7 +80,7 @@ router.delete("/:id", (req, res) => {
 router.put("/:id", upload.single("thumbnail"), (req, res) => {
     const { id } = req.params;
     const { title, description } = req.body;
-    const newThumbnail = req.file ? `/Image Assets/News/${req.file.filename}` : null;
+    const newThumbnail = req.file ? `/image_assets/News/${req.file.filename}` : null;
 
     db.query("SELECT thumbnail FROM news WHERE id = ?", [id], (err, results) => {
         if (err) return res.status(500).json(err);

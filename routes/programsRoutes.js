@@ -9,7 +9,7 @@ const router = express.Router();
 // Set up Multer storage for news
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/Image Assets/Programs');
+        cb(null, 'public/image_assets/Programs');
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + path.extname(file.originalname));
@@ -24,7 +24,7 @@ router.post("/upload", upload.single("cover_image"), (req, res) => {
     }
 
     const { department_name, program_name, program_specialization, program_description, number_of_terms, duration, internship, careers } = req.body;
-    const cover_image = `/Image Assets/Programs/${req.file.filename}`;
+    const cover_image = `/image_assets/Programs/${req.file.filename}`;
     const upload_date = new Date().toISOString().split("T")[0];
 
     const sql = "INSERT INTO programs (program_name, department_name, program_specialization, program_description, number_of_terms, duration, internship, careers, cover_image, upload_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -78,7 +78,7 @@ router.delete("/:id", (req, res) => {
 router.put("/:id", upload.single("cover_image"), (req, res) => {
     const { id } = req.params;
     const { department_name, program_name, program_specialization, program_description, number_of_terms, duration, internship, careers } = req.body;
-    const newCoverImage = req.file ? `/Image Assets/Programs/${req.file.filename}` : null;
+    const newCoverImage = req.file ? `/image_assets/Programs/${req.file.filename}` : null;
 
     db.query("SELECT cover_image FROM programs WHERE id = ?", [id], (err, results) => {
         if (err) return res.status(500).json(err);
