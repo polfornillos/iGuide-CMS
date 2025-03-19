@@ -44,6 +44,30 @@ router.get("/", (req, res) => {
     });
 });
 
+// Get All Artwork that is not archived
+router.get("/active", (req, res) => {
+    db.query(
+        "SELECT id, title, student_name, artwork, facebook_link, instagram_link, twitter_link FROM artworks WHERE isDeleted = 0",
+        (err, results) => {
+            if (err) return res.status(500).json(err);
+
+            // Format the results to include full image URL
+            const formattedResults = results.map(artwork => ({
+                id: artwork.id,
+                student_name: artwork.student_name,
+                title: artwork.title,
+                artwork: `http://localhost:5000${artwork.artwork}`,
+                facebook_link: artwork.facebook_link || "#", 
+                instagram_link: artwork.instagram_link || "#",
+                twitter_link: artwork.twitter_link || "#"
+            }));
+
+            res.json(formattedResults);
+        }
+    );
+});
+
+
 // Get Single Artwork
 router.get("/:id", (req, res) => {
     const artworkId = req.params.id;

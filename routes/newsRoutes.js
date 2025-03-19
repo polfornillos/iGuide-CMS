@@ -44,6 +44,23 @@ router.get("/", (req, res) => {
     });
 });
 
+// Get All Artwork that is not archived
+router.get("/active", (req, res) => {
+    db.query("SELECT id, title, description, thumbnail FROM news WHERE isDeleted = 0", (err, results) => {
+        if (err) return res.status(500).json(err);
+
+        // Add localhost:5000 to the image path
+        const formattedResults = results.map(news => ({
+            id: news.id,
+            title: news.title,
+            description: news.description,
+            thumbnail: `http://localhost:5000${news.thumbnail}`
+        }));
+
+        res.json(formattedResults);
+    });
+});
+
 // Get Single News
 router.get("/:id", (req, res) => {
     const newsId = req.params.id;
