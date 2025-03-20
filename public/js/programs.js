@@ -61,71 +61,6 @@ document.addEventListener('DOMContentLoaded', function() {
     handleProgramNameState();
 });
 
-// Add Program
-document.getElementById("submitProgram").addEventListener("click", function () {
-    let coverImage = document.getElementById("coverImage").files[0];
-    let departmentName = document.getElementById("departmentName").value.trim();
-    let programName = document.getElementById("programName").value.trim();
-    let programSpecialization = document.getElementById("programSpecialization").value.trim();
-    let programDescription = document.getElementById("programDescription").value.trim();
-    let numberOfTerms = document.getElementById("numberOfTerms").value.trim();
-    let duration = document.getElementById("programDuration").value.trim();
-    let internship = document.getElementById("internshipDuration").value.trim();
-    let careers = document.getElementById("careerOpportunities").value.trim();
-
-    if (!coverImage || !departmentName || !programName || !programSpecialization || !programDescription || !numberOfTerms || !duration || !internship || !careers) {
-        Swal.fire({
-            title: "Warning!",
-            text: "All fields are required.",
-            icon: "warning",
-            iconColor: "#f39c12",
-            confirmButtonColor: "#6c757d"
-        });
-        return;
-    }
-
-    let formData = new FormData();
-    formData.append("cover_image", coverImage);
-    formData.append("department_name", departmentName);
-    formData.append("program_name", programName);
-    formData.append("program_specialization", programSpecialization);
-    formData.append("program_description", programDescription);
-    formData.append("number_of_terms", numberOfTerms);
-    formData.append("duration", duration);
-    formData.append("internship", internship);
-    formData.append("careers", careers);
-
-    fetch("http://localhost:5000/programs/upload", {
-        method: "POST",
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message) {
-            Swal.fire({
-                title: "Success!",
-                text: "Program added successfully.",
-                icon: "success",
-                timer: 1500,
-                showConfirmButton: false
-            }).then(() => {
-                location.reload();
-            });
-        }
-    })
-    .catch(error => {
-        Swal.fire({
-            title: "Error!",
-            text: "Failed to add program. Please try again.",
-            icon: "error",
-            iconColor: "#d33",
-            confirmButtonColor: "#10326F"
-        });
-        console.error("Error:", error);
-    });
-});
-
-
 // Fetch and display programs
 function fetchPrograms() {
     fetch("http://localhost:5000/programs")
@@ -177,7 +112,6 @@ function fetchPrograms() {
         })
         .catch(error => console.error("Error fetching programs:", error));
 }
-
 
 // Delete programs based on ID
 function attachDeleteEvents() {
@@ -324,29 +258,81 @@ document.getElementById("editCoverImage").addEventListener("change", function (e
     }
 });
 
-// Saves the changes in Edit Program
-document.getElementById("saveProgramChanges").addEventListener("click", function () {
-    let programId = document.getElementById("editProgramId").value;
-    let departmentName = document.getElementById("editDepartmentName").value.trim();
-    let programName = document.getElementById("editProgramName").value.trim();
-    let programSpecialization = document.getElementById("editProgramSpecialization").value.trim();
-    let programDescription = document.getElementById("editProgramDescription").value.trim();
-    let numberOfTerms = document.getElementById("editNumberOfTerms").value.trim();
-    let duration = document.getElementById("editProgramDuration").value.trim();
-    let internship = document.getElementById("editInternshipDuration").value.trim();
-    let careers = document.getElementById("editCareerOpportunities").value.trim();
+document.addEventListener("DOMContentLoaded", function () {
+    // Add Program Event
+    document.getElementById("submitProgram").addEventListener("click", function () {
+        handleProgramSubmission("add");
+    });
 
-    if (!departmentName || !programName || !programSpecialization || !programDescription || !numberOfTerms || !duration || !internship || !careers) {
-        Swal.fire({
-            title: "Warning!",
-            text: "Please fill in all the required fields.",
-            icon: "warning",
-            confirmButtonColor: "#6c757d"
-        });
-        return;
-    }
+    // Edit Program Event
+    document.getElementById("saveProgramChanges").addEventListener("click", function () {
+        handleProgramSubmission("edit");
+    });
+
+    // Remove error messages dynamically
+    let fields = ["coverImage", "departmentName", "programName", "programSpecialization", 
+                  "programDescription", "numberOfTerms", "programDuration", 
+                  "internshipDuration", "careerOpportunities", 
+                  "editCoverImage", "editDepartmentName", "editProgramName", 
+                  "editProgramSpecialization", "editProgramDescription", 
+                  "editNumberOfTerms", "editProgramDuration", 
+                  "editInternshipDuration", "editCareerOpportunities"];
+
+    fields.forEach(id => {
+        let input = document.getElementById(id);
+        if (input) {
+            input.addEventListener("input", function () {
+                clearError(this);
+            });
+        }
+    });
+});
+
+// Function to handle both Add & Edit Program
+function handleProgramSubmission(action) {
+    let isEdit = action === "edit";
+
+    let programId = isEdit ? document.getElementById("editProgramId").value : null;
+    let coverImage = document.getElementById(isEdit ? "editCoverImage" : "coverImage").files[0];
+    let departmentName = document.getElementById(isEdit ? "editDepartmentName" : "departmentName").value.trim();
+    let programName = document.getElementById(isEdit ? "editProgramName" : "programName").value.trim();
+    let programSpecialization = document.getElementById(isEdit ? "editProgramSpecialization" : "programSpecialization").value.trim();
+    let programDescription = document.getElementById(isEdit ? "editProgramDescription" : "programDescription").value.trim();
+    let numberOfTerms = document.getElementById(isEdit ? "editNumberOfTerms" : "numberOfTerms").value.trim();
+    let duration = document.getElementById(isEdit ? "editProgramDuration" : "programDuration").value.trim();
+    let internship = document.getElementById(isEdit ? "editInternshipDuration" : "internshipDuration").value.trim();
+    let careers = document.getElementById(isEdit ? "editCareerOpportunities" : "careerOpportunities").value.trim();
+
+    let isValid = true;
+
+    // Collect all inputs
+    let inputElements = [
+        { element: coverImage, id: isEdit ? "editCoverImage" : "coverImage", required: !isEdit }, 
+        { element: departmentName, id: isEdit ? "editDepartmentName" : "departmentName" }, 
+        { element: programName, id: isEdit ? "editProgramName" : "programName" }, 
+        { element: programSpecialization, id: isEdit ? "editProgramSpecialization" : "programSpecialization" }, 
+        { element: programDescription, id: isEdit ? "editProgramDescription" : "programDescription" }, 
+        { element: numberOfTerms, id: isEdit ? "editNumberOfTerms" : "numberOfTerms" }, 
+        { element: duration, id: isEdit ? "editProgramDuration" : "programDuration" }, 
+        { element: internship, id: isEdit ? "editInternshipDuration" : "internshipDuration" }, 
+        { element: careers, id: isEdit ? "editCareerOpportunities" : "careerOpportunities" }
+    ];
+
+    // Clear previous errors
+    inputElements.forEach(({ id }) => clearError(document.getElementById(id)));
+
+    // Validation
+    inputElements.forEach(({ element, id, required = true }) => {
+        if (required && !element) {
+            showError(document.getElementById(id), "This field is required.");
+            isValid = false;
+        }
+    });
+
+    if (!isValid) return; // Stop execution if validation fails
 
     let formData = new FormData();
+    if (coverImage) formData.append("cover_image", coverImage);
     formData.append("department_name", departmentName);
     formData.append("program_name", programName);
     formData.append("program_specialization", programSpecialization);
@@ -356,13 +342,11 @@ document.getElementById("saveProgramChanges").addEventListener("click", function
     formData.append("internship", internship);
     formData.append("careers", careers);
 
-    let imageFile = document.getElementById("editCoverImage").files[0];
-    if (imageFile) {
-        formData.append("cover_image", imageFile);
-    }
+    let url = isEdit ? `http://localhost:5000/programs/${programId}` : "http://localhost:5000/programs/upload";
+    let method = isEdit ? "PUT" : "POST";
 
-    fetch(`http://localhost:5000/programs/${programId}`, {
-        method: "PUT",
+    fetch(url, {
+        method: method,
         body: formData
     })
     .then(response => response.json())
@@ -370,38 +354,50 @@ document.getElementById("saveProgramChanges").addEventListener("click", function
         if (data.message) {
             Swal.fire({
                 title: "Success!",
-                text: "Program has been updated successfully.",
+                text: isEdit ? "Program updated successfully." : "Program added successfully.",
                 icon: "success",
                 timer: 1500,
                 showConfirmButton: false
             }).then(() => {
-                let editModal = document.getElementById("editProgramModal");
-                let modalInstance = bootstrap.Modal.getInstance(editModal);
-
-                if (modalInstance) {
-                    modalInstance.hide();
+                fetchPrograms(); // Refresh program list
+                if (isEdit) {
+                    document.getElementById("editProgramModal").querySelector(".btn-close").click();
+                } else {
+                    location.reload();
                 }
-
-                document.querySelectorAll(".modal-backdrop").forEach(backdrop => backdrop.remove());
-                document.body.classList.remove("modal-open");
-                document.body.style = "";
-            
-                fetchPrograms(); 
-                document.getElementById("editProgramModal").querySelector(".btn-close").click();
             });
         }
     })
     .catch(error => {
         Swal.fire({
             title: "Error!",
-            text: "Failed to update program. Please try again.",
+            text: isEdit ? "Failed to update program. Please try again." : "Failed to add program. Please try again.",
             icon: "error",
             iconColor: "#d33",
             confirmButtonColor: "#10326F"
         });
-        console.error("Error updating program:", error);
+        console.error("Error:", error);
     });
-});
+}
+
+// Function to show error messages
+function showError(inputElement, message) {
+    inputElement.classList.add("is-invalid");
+
+    let errorMessage = document.createElement("div");
+    errorMessage.className = "error-message text-danger mt-1";
+    errorMessage.innerText = message;
+
+    inputElement.parentNode.appendChild(errorMessage);
+}
+
+// Function to clear error messages dynamically
+function clearError(inputElement) {
+    inputElement.classList.remove("is-invalid");
+    let errorMessage = inputElement.parentNode.querySelector(".error-message");
+    if (errorMessage) errorMessage.remove();
+}
+
 
 // Call fetchPrograms() when the page loads
 document.addEventListener("DOMContentLoaded", fetchPrograms);

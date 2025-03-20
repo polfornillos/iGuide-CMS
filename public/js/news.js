@@ -42,59 +42,6 @@ document.getElementById("newsImage").addEventListener("change", function (event)
     }
 });
 
-// Add news
-document.getElementById("submitNews").addEventListener("click", function () {
-    let title = document.getElementById("newsTitle").value.trim();
-    let description = document.getElementById("newsDescription").value.trim();
-    let image = document.getElementById("newsImage").files[0];
-
-    // Check if fields are empty
-    if (!title || !description || !image) {
-        Swal.fire({
-            title: "Warning!",
-            text: "All fields are required.",
-            icon: "warning",
-            iconColor: "#f39c12",
-            confirmButtonColor: "#6c757d"
-        });
-        return; // Stop execution if fields are empty
-    }
-
-    let formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
-    formData.append("thumbnail", image);
-
-    fetch("http://localhost:5000/news/upload", {
-        method: "POST",
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message) {
-            Swal.fire({
-                title: "Success!",
-                text: "News has been added successfully.",
-                icon: "success",
-                timer: 1500,
-                showConfirmButton: false
-            }).then(() => {
-                location.reload();
-            });
-        }
-    })
-    .catch(error => {
-        Swal.fire({
-            title: "Error!",
-            text: "Failed to add news. Please try again.",
-            icon: "error",
-            iconColor: "#d33",
-            confirmButtonColor: "#10326F"
-        });
-        console.error("Error:", error);
-    });
-});
-
 // Fetch and display news
 function fetchNews() {
     fetch("http://localhost:5000/news")
@@ -272,62 +219,120 @@ document.getElementById("editNewsImage").addEventListener("change", function (ev
     }
 });
 
-// Saves the changes in Edit News
-document.getElementById("saveNewsChanges").addEventListener("click", function () {
-    let newsId = document.getElementById("editNewsId").value;
-    let newsTitle = document.getElementById("editNewsTitle").value.trim();
-    let newsDescription = document.getElementById("editNewsDescription").value.trim();
+document.addEventListener("DOMContentLoaded", function () {
+    // Add News Event
+    document.getElementById("submitNews").addEventListener("click", function () {
+        handleNewsSubmission("add");
+    });
+
+    // Edit News Event
+    document.getElementById("saveNewsChanges").addEventListener("click", function () {
+        handleNewsSubmission("edit");
+    });
+
+    // Remove error messages when typing or selecting a file
+    document.getElementById("newsTitle").addEventListener("input", function () {
+        clearError(this);
+    });
+    document.getElementById("newsDescription").addEventListener("input", function () {
+        clearError(this);
+    });
+    document.getElementById("newsImage").addEventListener("change", function () {
+        clearError(this);
+    });
+
+    document.getElementById("editNewsTitle").addEventListener("input", function () {
+        clearError(this);
+    });
+    document.getElementById("editNewsDescription").addEventListener("input", function () {
+        clearError(this);
+    });
+    document.getElementById("editNewsImage").addEventListener("change", function () {
+        clearError(this);
+    });
+});
+
+// Function to handle both Add & Edit News
+function handleNewsSubmission(action) {
+    let isEdit = action === "edit";
+    let newsId = isEdit ? document.getElementById("editNewsId").value : null;
+
+    let inputElements = [
+        { element: document.getElementById(isEdit ? "editNewsTitle" : "newsTitle"), id: isEdit ? "editNewsTitle" : "newsTitle" },
+        { element: document.getElementById(isEdit ? "editNewsDescription" : "newsDescription"), id: isEdit ? "editNewsDescription" : "newsDescription" },
+        { element: document.getElementById(isEdit ? "editNewsImage" : "newsImage"), id: isEdit ? "editNewsImage" : "newsImage", required: !isEdit }
+    ];
+
+    let isValid = true;
+
+    // Clear previous errors
+    inputElements.forEach(({ id }) => clearError(document.getElementById(id)));
 
     // Validation
-    if (!newsTitle || !newsDescription) {
-        Swal.fire({
-            title: "Warning!",
-            text: "Please fill in both the news title and description.",
-            icon: "warning",
-            confirmButtonColor: "#6c757d"
-        });
-        return;
-    }
+    inputElements.forEach(({ element, id, required = true }) => {
+        if (required && (!element.value || (element.files && element.files.length === 0))) {
+            showError(document.getElementById(id), "This field is required.");
+            isValid = false;
+        }
+    });
+
+    if (!isValid) return; // Stop execution if validation fails
 
     let formData = new FormData();
-    formData.append("title", newsTitle);
-    formData.append("description", newsDescription);
+    formData.append("title", inputElements[0].element.value.trim());
+    formData.append("description", inputElements[1].element.value.trim());
+    if (inputElements[2].element.files[0]) formData.append("thumbnail", inputElements[2].element.files[0]);
 
-    let imageFile = document.getElementById("editNewsImage").files[0];
-    if (imageFile) {
-        formData.append("thumbnail", imageFile);
-    }
+    let url = isEdit ? `http://localhost:5000/news/${newsId}` : "http://localhost:5000/news/upload";
+    let method = isEdit ? "PUT" : "POST";
 
-    fetch(`http://localhost:5000/news/${newsId}`, {
-        method: "PUT",
-        body: formData
-    })
+    fetch(url, { method, body: formData })
     .then(response => response.json())
     .then(data => {
         if (data.message) {
             Swal.fire({
                 title: "Success!",
-                text: "News has been updated successfully.",
+                text: isEdit ? "News has been updated successfully." : "News has been added successfully.",
                 icon: "success",
                 timer: 1500,
                 showConfirmButton: false
             }).then(() => {
                 fetchNews();
-                document.getElementById("editNewsModal").querySelector(".btn-close").click();
+                if (isEdit) document.getElementById("editNewsModal").querySelector(".btn-close").click();
+                else location.reload();
             });
         }
     })
     .catch(error => {
         Swal.fire({
             title: "Error!",
-            text: "Failed to update news. Please try again.",
+            text: isEdit ? "Failed to update news. Please try again." : "Failed to add news. Please try again.",
             icon: "error",
             iconColor: "#d33",
             confirmButtonColor: "#10326F"
         });
-        console.error("Error updating news:", error);
+        console.error("Error:", error);
     });
-});
+}
+
+// Function to show error messages
+function showError(inputElement, message) {
+    inputElement.classList.add("is-invalid");
+
+    let errorMessage = document.createElement("div");
+    errorMessage.className = "error-message text-danger mt-1";
+    errorMessage.innerText = message;
+
+    inputElement.parentNode.appendChild(errorMessage);
+}
+
+// Function to clear error messages dynamically
+function clearError(inputElement) {
+    inputElement.classList.remove("is-invalid");
+    let errorMessage = inputElement.parentNode.querySelector(".error-message");
+    if (errorMessage) errorMessage.remove();
+}
+
 
 // Call fetchNews() when the page loads
 document.addEventListener("DOMContentLoaded", fetchNews);

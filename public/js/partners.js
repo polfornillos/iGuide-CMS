@@ -42,59 +42,6 @@ document.getElementById("partnerLogo").addEventListener("change", function (even
     }
 });
 
-// Add Partner
-document.getElementById("submitPartner").addEventListener("click", function () {
-    let companyName = document.getElementById("partnerName").value.trim();
-    let companyLink = document.getElementById("partnerLink").value.trim();
-    let companyLogo = document.getElementById("partnerLogo").files[0];
-
-    // Check if fields are empty
-    if (!companyName || !companyLogo) {
-        Swal.fire({
-            title: "Warning!",
-            text: "All fields are required.",
-            icon: "warning",
-            iconColor: "#f39c12",
-            confirmButtonColor: "#6c757d"
-        });
-        return; // Stop execution if fields are empty
-    }
-
-    let formData = new FormData();
-    formData.append("company_name", companyName);
-    formData.append("company_logo", companyLogo);
-    formData.append("company_link", companyLink);
-
-    fetch("http://localhost:5000/partners/upload", {
-        method: "POST",
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message) {
-            Swal.fire({
-                title: "Success!",
-                text: "Partner has been added successfully.",
-                icon: "success",
-                timer: 1500,
-                showConfirmButton: false
-            }).then(() => {
-                location.reload();
-            });
-        }
-    })
-    .catch(error => {
-        Swal.fire({
-            title: "Error!",
-            text: "Failed to add partner. Please try again.",
-            icon: "error",
-            iconColor: "#d33",
-            confirmButtonColor: "#10326F"
-        });
-        console.error("Error:", error);
-    });
-});
-
 // Fetch and display partners
 function fetchPartners() {
     fetch("http://localhost:5000/partners")
@@ -277,34 +224,79 @@ document.getElementById("editPartnerLogo").addEventListener("change", function (
     }
 });
 
-// Saves the changes in Edit Partner
-document.getElementById("savePartnerChanges").addEventListener("click", function () {
-    let partnerId = document.getElementById("editPartnerId").value;
-    let partnerName = document.getElementById("editPartnerName").value.trim();
-    let partnerLink = document.getElementById("editPartnerLink").value.trim();
+document.addEventListener("DOMContentLoaded", function () {
+    // Add Partner Event
+    document.getElementById("submitPartner").addEventListener("click", function () {
+        handlePartnerSubmission("add");
+    });
+
+    // Edit Partner Event
+    document.getElementById("savePartnerChanges").addEventListener("click", function () {
+        handlePartnerSubmission("edit");
+    });
+
+    // Remove error messages when typing or selecting a file
+    let fields = ["partnerName", "partnerLink", "partnerLogo", "editPartnerName", "editPartnerLink", "editPartnerLogo"];
+
+    fields.forEach(id => {
+        let input = document.getElementById(id);
+        if (input) {
+            input.addEventListener("input", function () {
+                clearError(this);
+            });
+            if (input.type === "file") {
+                input.addEventListener("change", function () {
+                    clearError(this);
+                });
+            }
+        }
+    });
+});
+
+// Function to handle both Add & Edit Partner
+function handlePartnerSubmission(action) {
+    let isEdit = action === "edit";
+
+    let partnerId = isEdit ? document.getElementById("editPartnerId").value : null;
+    let nameInput = document.getElementById(isEdit ? "editPartnerName" : "partnerName");
+    let linkInput = document.getElementById(isEdit ? "editPartnerLink" : "partnerLink");
+    let logoInput = document.getElementById(isEdit ? "editPartnerLogo" : "partnerLogo");
+
+    let partnerName = nameInput.value.trim();
+    let partnerLink = linkInput.value.trim();
+    let logoFile = logoInput.files[0];
+
+    let isValid = true;
+
+    let inputElements = [
+        { element: partnerName, id: isEdit ? "editPartnerName" : "partnerName" },
+        { element: partnerLink, id: isEdit ? "editPartnerLink" : "partnerLink", required: false },
+        { element: logoFile, id: isEdit ? "editPartnerLogo" : "partnerLogo", required: !isEdit }
+    ];
+
+    // Clear previous errors
+    inputElements.forEach(({ id }) => clearError(document.getElementById(id)));
 
     // Validation
-    if (!partnerName) {
-        Swal.fire({
-            title: "Warning!",
-            text: "Please enter the company name.",
-            icon: "warning",
-            confirmButtonColor: "#6c757d"
-        });
-        return;
-    }
+    inputElements.forEach(({ element, id, required = true }) => {
+        if (required && !element) {
+            showError(document.getElementById(id), "This field is required.");
+            isValid = false;
+        }
+    });
+
+    if (!isValid) return; // Stop execution if validation fails
 
     let formData = new FormData();
     formData.append("company_name", partnerName);
     formData.append("company_link", partnerLink);
+    if (logoFile) formData.append("company_logo", logoFile);
 
-    let imageFile = document.getElementById("editPartnerLogo").files[0];
-    if (imageFile) {
-        formData.append("company_logo", imageFile);
-    }
+    let url = isEdit ? `http://localhost:5000/partners/${partnerId}` : "http://localhost:5000/partners/upload";
+    let method = isEdit ? "PUT" : "POST";
 
-    fetch(`http://localhost:5000/partners/${partnerId}`, {
-        method: "PUT",
+    fetch(url, {
+        method: method,
         body: formData
     })
     .then(response => response.json())
@@ -312,27 +304,45 @@ document.getElementById("savePartnerChanges").addEventListener("click", function
         if (data.message) {
             Swal.fire({
                 title: "Success!",
-                text: "Partner has been updated successfully.",
+                text: isEdit ? "Partner has been updated successfully." : "Partner has been added successfully.",
                 icon: "success",
                 timer: 1500,
                 showConfirmButton: false
             }).then(() => {
-                fetchPartners();
-                document.getElementById("editPartnerModal").querySelector(".btn-close").click();
+                location.reload();
             });
         }
     })
     .catch(error => {
         Swal.fire({
             title: "Error!",
-            text: "Failed to update partner. Please try again.",
+            text: isEdit ? "Failed to update partner. Please try again." : "Failed to add partner. Please try again.",
             icon: "error",
             iconColor: "#d33",
             confirmButtonColor: "#10326F"
         });
-        console.error("Error updating partner:", error);
+        console.error("Error:", error);
     });
-});
+}
+
+// Function to show error messages
+function showError(inputElement, message) {
+    inputElement.classList.add("is-invalid");
+
+    let errorMessage = document.createElement("div");
+    errorMessage.className = "error-message text-danger mt-1";
+    errorMessage.innerText = message;
+
+    inputElement.parentNode.appendChild(errorMessage);
+}
+
+// Function to clear error messages dynamically
+function clearError(inputElement) {
+    inputElement.classList.remove("is-invalid");
+    let errorMessage = inputElement.parentNode.querySelector(".error-message");
+    if (errorMessage) errorMessage.remove();
+}
+
 
 // Call fetchPartners() when the page loads
 document.addEventListener("DOMContentLoaded", fetchPartners());

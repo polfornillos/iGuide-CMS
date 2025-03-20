@@ -42,64 +42,6 @@ document.getElementById("artworkForm").addEventListener("change", function (even
     }
 });
 
-// Add artwork
-document.getElementById("submitArtwork").addEventListener("click", function () {
-    let title = document.getElementById("artworkTitle").value.trim();
-    let studentName = document.getElementById("studentName").value.trim();
-    let facebookLink = document.getElementById("facebookLink").value.trim();
-    let twitterLink = document.getElementById("twitterLink").value.trim();
-    let instagramLink = document.getElementById("instagramLink").value.trim();
-    let image = document.getElementById("artworkImage").files[0];
-
-    if (!title || !studentName || !image) {
-        Swal.fire({
-            title: "Warning!",
-            text: "Title, Student Name, and an Image are required.",
-            icon: "warning",
-            iconColor: "#f39c12",
-            confirmButtonColor: "#6c757d"
-        });
-        return;
-    }
-
-    let formData = new FormData();
-    formData.append("title", title);
-    formData.append("student_name", studentName);
-    formData.append("artwork", image);
-    formData.append("facebook_link", facebookLink);
-    formData.append("twitter_link", twitterLink);
-    formData.append("instagram_link", instagramLink);
-
-    fetch("http://localhost:5000/artworks/upload", { // FIXED: Correct API route
-        method: "POST",
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message) {
-            Swal.fire({
-                title: "Success!",
-                text: "Artwork has been added successfully.",
-                icon: "success",
-                timer: 1500,
-                showConfirmButton: false
-            }).then(() => {
-                location.reload();
-            });
-        }
-    })
-    .catch(error => {
-        Swal.fire({
-            title: "Error!",
-            text: "Failed to add artwork. Please try again.",
-            icon: "error",
-            iconColor: "#d33",
-            confirmButtonColor: "#10326F"
-        });
-        console.error("Error:", error);
-    });
-});
-
 // Fetch and display artworks
 function fetchArtworks() {
     fetch("http://localhost:5000/artworks")
@@ -295,68 +237,124 @@ document.getElementById("editArtworkImage").addEventListener("change", function 
     }
 });
 
-// Saves the changes in Edit Artwork
-document.getElementById("saveArtworkChanges").addEventListener("click", function () {
-    let artworkId = document.getElementById("editArtworkId").value;
-    let artworkTitle = document.getElementById("editArtworkTitle").value.trim();
-    let studentName = document.getElementById("editArtworkStudentName").value.trim();
-    let facebookLink = document.getElementById("editArtworkFacebookLink").value.trim();
-    let twitterLink = document.getElementById("editArtworkTwitterLink").value.trim();
-    let instagramLink = document.getElementById("editArtworkInstagramLink").value.trim();
+document.addEventListener("DOMContentLoaded", function () {
+    // Add Artwork Event
+    document.getElementById("submitArtwork").addEventListener("click", function () {
+        handleArtworkSubmission("add");
+    });
+
+    // Edit Artwork Event
+    document.getElementById("saveArtworkChanges").addEventListener("click", function () {
+        handleArtworkSubmission("edit");
+    });
+
+    // Remove error messages when typing or selecting a file
+    let fields = ["artworkTitle", "studentName", "facebookLink", "twitterLink", "instagramLink", "artworkImage",
+                  "editArtworkTitle", "editArtworkStudentName", "editArtworkFacebookLink", "editArtworkTwitterLink",
+                  "editArtworkInstagramLink", "editArtworkImage"];
+
+    fields.forEach(id => {
+        let input = document.getElementById(id);
+        if (input) {
+            input.addEventListener("input", function () {
+                clearError(this);
+            });
+            if (input.type === "file") {
+                input.addEventListener("change", function () {
+                    clearError(this);
+                });
+            }
+        }
+    });
+});
+
+// Function to handle both Add & Edit Artwork
+function handleArtworkSubmission(action) {
+    let isEdit = action === "edit";
+    let artworkId = isEdit ? document.getElementById("editArtworkId").value : null;
+
+    let inputElements = [
+        { element: document.getElementById(isEdit ? "editArtworkTitle" : "artworkTitle"), id: isEdit ? "editArtworkTitle" : "artworkTitle" },
+        { element: document.getElementById(isEdit ? "editArtworkStudentName" : "studentName"), id: isEdit ? "editArtworkStudentName" : "studentName" },
+        { element: document.getElementById(isEdit ? "editArtworkFacebookLink" : "facebookLink"), id: isEdit ? "editArtworkFacebookLink" : "facebookLink", required: false },
+        { element: document.getElementById(isEdit ? "editArtworkTwitterLink" : "twitterLink"), id: isEdit ? "editArtworkTwitterLink" : "twitterLink", required: false },
+        { element: document.getElementById(isEdit ? "editArtworkInstagramLink" : "instagramLink"), id: isEdit ? "editArtworkInstagramLink" : "instagramLink", required: false },
+        { element: document.getElementById(isEdit ? "editArtworkImage" : "artworkImage"), id: isEdit ? "editArtworkImage" : "artworkImage", required: !isEdit }
+    ];
+
+    let isValid = true;
+
+    // Clear previous errors
+    inputElements.forEach(({ id }) => clearError(document.getElementById(id)));
 
     // Validation
-    if (!artworkTitle || !studentName) {
-        Swal.fire({
-            title: "Warning!",
-            text: "Please fill in all the required fields (title, student name).",
-            icon: "warning",
-            confirmButtonColor: "#6c757d"
-        });
-        return;
-    }
+    inputElements.forEach(({ element, id, required = true }) => {
+        if (required && (!element.value || (element.files && element.files.length === 0))) {
+            showError(document.getElementById(id), "This field is required.");
+            isValid = false;
+        }
+    });
+
+    if (!isValid) return; // Stop execution if validation fails
 
     let formData = new FormData();
-    formData.append("title", artworkTitle);
-    formData.append("student_name", studentName);
-    formData.append("facebook_link", facebookLink);
-    formData.append("twitter_link", twitterLink);
-    formData.append("instagram_link", instagramLink);
+    formData.append("title", inputElements[0].element.value.trim());
+    formData.append("student_name", inputElements[1].element.value.trim());
+    formData.append("facebook_link", inputElements[2].element.value.trim());
+    formData.append("twitter_link", inputElements[3].element.value.trim());
+    formData.append("instagram_link", inputElements[4].element.value.trim());
+    if (inputElements[5].element.files[0]) formData.append("artwork", inputElements[5].element.files[0]);
 
-    let imageFile = document.getElementById("editArtworkImage").files[0];
-    if (imageFile) {
-        formData.append("artwork", imageFile);
-    }
+    let url = isEdit ? `http://localhost:5000/artworks/${artworkId}` : "http://localhost:5000/artworks/upload";
+    let method = isEdit ? "PUT" : "POST";
 
-    fetch(`http://localhost:5000/artworks/${artworkId}`, {
-        method: "PUT",
-        body: formData
-    })
+    fetch(url, { method, body: formData })
     .then(response => response.json())
     .then(data => {
         if (data.message) {
             Swal.fire({
                 title: "Success!",
-                text: "Artwork has been updated successfully.",
+                text: isEdit ? "Artwork has been updated successfully." : "Artwork has been added successfully.",
                 icon: "success",
                 timer: 1500,
                 showConfirmButton: false
             }).then(() => {
-                fetchArtworks(); // Assuming fetchArtworks is your function to refresh the artwork list
-                document.getElementById("editArtworkModal").querySelector(".btn-close").click();
+                fetchArtworks(); 
+                if (isEdit) document.getElementById("editArtworkModal").querySelector(".btn-close").click();
+                else location.reload();
             });
         }
     })
     .catch(error => {
         Swal.fire({
             title: "Error!",
-            text: "Failed to update artwork. Please try again.",
+            text: isEdit ? "Failed to update artwork. Please try again." : "Failed to add artwork. Please try again.",
             icon: "error",
             iconColor: "#d33",
             confirmButtonColor: "#10326F"
         });
-        console.error("Error updating artwork:", error);
+        console.error("Error:", error);
     });
-});
+}
+
+// Function to show error messages
+function showError(inputElement, message) {
+    inputElement.classList.add("is-invalid");
+
+    let errorMessage = document.createElement("div");
+    errorMessage.className = "error-message text-danger mt-1";
+    errorMessage.innerText = message;
+
+    inputElement.parentNode.appendChild(errorMessage);
+}
+
+// Function to clear error messages dynamically
+function clearError(inputElement) {
+    inputElement.classList.remove("is-invalid");
+    let errorMessage = inputElement.parentNode.querySelector(".error-message");
+    if (errorMessage) errorMessage.remove();
+}
+
 
 
 // Call fetchNews() when the page loads
