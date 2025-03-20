@@ -343,7 +343,6 @@ function clearError(inputElement) {
     if (errorMessage) errorMessage.remove();
 }
 
-
 // Call fetchPartners() when the page loads
 document.addEventListener("DOMContentLoaded", fetchPartners());
 

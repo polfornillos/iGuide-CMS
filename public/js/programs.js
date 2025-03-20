@@ -398,6 +398,5 @@ function clearError(inputElement) {
     if (errorMessage) errorMessage.remove();
 }
 
-
 // Call fetchPrograms() when the page loads
 document.addEventListener("DOMContentLoaded", fetchPrograms);

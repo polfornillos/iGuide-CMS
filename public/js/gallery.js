@@ -355,8 +355,6 @@ function clearError(inputElement) {
     if (errorMessage) errorMessage.remove();
 }
 
-
-
 // Call fetchNews() when the page loads
 document.addEventListener("DOMContentLoaded", fetchArtworks);
 

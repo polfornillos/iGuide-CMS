@@ -54,6 +54,42 @@ router.get("/:id", (req, res) => {
     });
 });
 
+// Get all programs for School of Computing
+router.get("/computing", (req, res) => {
+    const sql = "SELECT * FROM programs WHERE isDeleted = 0 AND department_name = ?";
+    db.query(sql, ["School of Computing"], (err, results) => {
+        if (err) return res.status(500).json(err);
+        res.json(results);
+    });
+});
+
+// Get all programs for School of Business and Arts
+router.get("/business-arts", (req, res) => {
+    const sql = "SELECT * FROM programs WHERE isDeleted = 0 AND department_name = ?";
+    db.query(sql, ["School of Business and Arts"], (err, results) => {
+        if (err) return res.status(500).json(err);
+        res.json(results);
+    });
+});
+
+// Get all programs for School of Design and the Arts
+router.get("/design-arts", (req, res) => {
+    const sql = "SELECT * FROM programs WHERE isDeleted = 0 AND department_name = ?";
+    db.query(sql, ["School of Design and the Arts"], (err, results) => {
+        if (err) return res.status(500).json(err);
+        res.json(results);
+    });
+});
+
+// Get all programs for Senior High School
+router.get("/senior-high", (req, res) => {
+    const sql = "SELECT * FROM programs WHERE isDeleted = 0 AND department_name = ?";
+    db.query(sql, ["Senior High School"], (err, results) => {
+        if (err) return res.status(500).json(err);
+        res.json(results);
+    });
+});
+
 // Delete Program (including Image)
 router.delete("/:id", (req, res) => {
     const programId = req.params.id;

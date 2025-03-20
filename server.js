@@ -13,6 +13,7 @@ const newsRoutes = require('./routes/newsRoutes');
 const artworkRoutes = require('./routes/artworkRoutes');
 const programsRoutes = require('./routes/programsRoutes');
 const partnersRoutes = require('./routes/partnersRoutes');
+const videosRoutes = require('./routes/videosRoutes');
 
 
 // Use routes
@@ -20,8 +21,7 @@ app.use('/news', newsRoutes);
 app.use('/artworks', artworkRoutes);
 app.use('/programs', programsRoutes);
 app.use('/partners', partnersRoutes);
-
-
+app.use('/videos', videosRoutes);
 
 app.listen(5000, () => {
     console.log('Server running on port 5000');

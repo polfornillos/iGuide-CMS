@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Manage News</title>
+    <title>Manage Programs</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -23,7 +23,7 @@
         <div class="collapse navbar-collapse justify-content-end mt-5 mt-lg-0" id="navbarNav">
             <ul class="navbar-nav d-flex" style="gap:20px">
                 <li class="nav-item">
-                    <a class="nav-link text-light current-page" href="#">News</a>
+                    <a class="nav-link text-light" href="News.html">News</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-light" href="Gallery.html">Gallery</a>
@@ -35,28 +35,28 @@
                     <a class="nav-link text-light" href="Partners.html">Partners</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-light" href="Videos.html">Videos</a>
+                    <a class="nav-link text-light  current-page" href="#">Videos</a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
 
-<!-- Manage News Section -->
+<!-- Manage Videos Section -->
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="mb-0">Manage News</h3>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNewsModal"><i class="fas fa-plus"></i> Add </button>    
+        <h3 class="mb-0">Manage Videos</h3>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addVideoModal"><i class="fas fa-plus"></i> Add </button>    
     </div>
 
     <div class="table-responsive table-container p-3 bg-light rounded shadow">
         <input type="text" id="searchInput" class="form-control mb-3" placeholder="Search...">
-        <table id="newsTable" class="table">
+        <table id="videosTable" class="table">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Title</th>
-                    <th>Thumbnail</th>
+                    <th>Video Link</th>
                     <th>Description</th>
                     <th>Upload Date</th>
                     <th class="text-center">Status</th>
@@ -69,79 +69,70 @@
     </div>
 </div>
 
-<!-- News Modal -->
-<div class="modal fade" id="addNewsModal" tabindex="-1" aria-labelledby="addNewsModalLabel" aria-hidden="true">
+<!-- Add Video Modal -->
+<div class="modal fade" id="addVideoModal" tabindex="-1" aria-labelledby="addVideoModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header" style="background-color: #10326F; color: white;">
-                <h5 class="modal-title" id="addNewsModalLabel">Add News</h5>
+                <h5 class="modal-title" id="addVideoModalLabel">Add Video</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="newsForm">
-                    <div class="mb-3 text-center w-100 d-flex justify-content-center align-items-center img-container">
-                        <img id="imagePreview" src="" alt="Image Preview" class="img-thumbnail d-none">
-                        <p id="imagePlaceholder">No image uploaded</p>                    
+                <form id="videoForm">
+                    <div class="mb-3">
+                        <label for="videoTitle" class="form-label">Video Title</label>
+                        <input type="text" class="form-control" id="videoTitle" placeholder="Enter video title" required>
                     </div>
                     <div class="mb-3">
-                        <label for="newsImage" class="form-label">Upload Image</label>
-                        <input type="file" class="form-control" id="newsImage" accept="image/*" required>
+                        <label for="videoLink" class="form-label">Video Link</label>
+                        <input type="url" class="form-control" id="videoLink" placeholder="Enter video link (YouTube, Vimeo, etc.)" required>
                     </div>
                     <div class="mb-3">
-                        <label for="newsTitle" class="form-label">News Title</label>
-                        <input type="text" class="form-control" id="newsTitle" placeholder="Enter news title" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="newsDescription" class="form-label">News Description</label>
-                        <textarea class="form-control" id="newsDescription" rows="4" placeholder="Enter news description" required></textarea>
+                        <label for="videoDescription" class="form-label">Video Description</label>
+                        <textarea class="form-control" id="videoDescription" rows="4" placeholder="Enter video description" required></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary" id="submitNews">Submit</button>
+                <button type="submit" class="btn btn-primary" id="submitVideo">Submit</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Edit News Modal -->
-<div class="modal fade" id="editNewsModal" tabindex="-1" aria-labelledby="editNewsModalLabel" aria-hidden="true">
+<!-- Edit Video Modal -->
+<div class="modal fade" id="editVideoModal" tabindex="-1" aria-labelledby="editVideoModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header" style="background-color: #10326F; color: white;">
-                <h5 class="modal-title" id="editNewsModalLabel">Edit News</h5>
+                <h5 class="modal-title" id="editVideoModalLabel">Edit Video</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="editNewsForm">
-                    <input type="hidden" id="editNewsId">
-                    <div class="mb-3 text-center w-100 d-flex justify-content-center align-items-center img-container">
-                        <img id="editImagePreview" src="" alt="Image Preview" class="img-thumbnail">
-                        <p id="editImagePlaceholder">No image uploaded</p>
+                <form id="editVideoForm">
+                    <input type="hidden" id="editVideoId">
+                    <div class="mb-3">
+                        <label for="editVideoTitle" class="form-label">Video Title</label>
+                        <input type="text" class="form-control" id="editVideoTitle" required>
                     </div>
                     <div class="mb-3">
-                        <label for="editNewsImage" class="form-label">Upload Image</label>
-                        <input type="file" class="form-control" id="editNewsImage" accept="image/*">
+                        <label for="editVideoLink" class="form-label">Video Link</label>
+                        <input type="url" class="form-control" id="editVideoLink" required>
                     </div>
                     <div class="mb-3">
-                        <label for="editNewsTitle" class="form-label">News Title</label>
-                        <input type="text" class="form-control" id="editNewsTitle" placeholder="Enter news title">
-                    </div>
-                    <div class="mb-3">
-                        <label for="editNewsDescription" class="form-label">News Description</label>
-                        <textarea class="form-control" id="editNewsDescription" rows="4" placeholder="Enter news description"></textarea>
+                        <label for="editVideoDescription" class="form-label">Video Description</label>
+                        <textarea class="form-control" id="editVideoDescription" rows="4" required></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary" id="saveNewsChanges">Save Changes</button>
+                <button type="submit" class="btn btn-primary" id="saveVideoChanges">Save Changes</button>
             </div>
         </div>
     </div>
 </div>
-
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -149,7 +140,7 @@
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="js/news.js"></script>
+<script src="js/videos.js"></script>
 
 </body>
 </html>
