@@ -42,6 +42,71 @@ router.get("/", (req, res) => {
     });
 });
 
+// Get all programs for School of Computing
+router.get("/soc", (req, res) => {
+    const sql = "SELECT * FROM programs WHERE isDeleted = 0 AND department_name = ?";
+    db.query(sql, ["School of Computing"], (err, results) => {
+        if (err) return res.status(500).json(err);
+
+        // Modify each program's cover_image to include the full URL
+        const formattedResults = results.map(program => ({
+            ...program,
+            cover_image: `http://localhost:5000${program.cover_image}`
+        }));
+
+        res.json(formattedResults);
+    });
+});
+
+// Get all programs for School of Business and Arts
+router.get("/sbla", (req, res) => {
+    const sql = "SELECT * FROM programs WHERE isDeleted = 0 AND department_name = ?";
+    db.query(sql, ["School of Business and Liberal Arts"], (err, results) => {
+        if (err) return res.status(500).json(err);
+
+        // Modify each program's cover_image to include the full URL
+        const formattedResults = results.map(program => ({
+            ...program,
+            cover_image: `http://localhost:5000${program.cover_image}`
+        }));
+
+        res.json(formattedResults);
+    });
+});
+
+// Get all programs for School of Design and the Arts
+router.get("/sda", (req, res) => {
+    const sql = "SELECT * FROM programs WHERE isDeleted = 0 AND department_name = ?";
+    db.query(sql, ["School of Design and the Arts"], (err, results) => {
+        if (err) return res.status(500).json(err);
+
+        // Modify each program's cover_image to include the full URL
+        const formattedResults = results.map(program => ({
+            ...program,
+            cover_image: `http://localhost:5000${program.cover_image}`
+        }));
+
+        res.json(formattedResults);
+    });
+});
+
+// Get all programs for Senior High School
+router.get("/shs", (req, res) => {
+    const sql = "SELECT * FROM programs WHERE isDeleted = 0 AND department_name = ?";
+    db.query(sql, ["Senior High School"], (err, results) => {
+        if (err) return res.status(500).json(err);
+
+        // Modify each program's cover_image to include the full URL
+        const formattedResults = results.map(program => ({
+            ...program,
+            cover_image: `http://localhost:5000${program.cover_image}`
+        }));
+
+        res.json(formattedResults);
+    });
+});
+
+
 // Get Single Program
 router.get("/:id", (req, res) => {
     const programId = req.params.id;
@@ -54,41 +119,6 @@ router.get("/:id", (req, res) => {
     });
 });
 
-// Get all programs for School of Computing
-router.get("/computing", (req, res) => {
-    const sql = "SELECT * FROM programs WHERE isDeleted = 0 AND department_name = ?";
-    db.query(sql, ["School of Computing"], (err, results) => {
-        if (err) return res.status(500).json(err);
-        res.json(results);
-    });
-});
-
-// Get all programs for School of Business and Arts
-router.get("/business-arts", (req, res) => {
-    const sql = "SELECT * FROM programs WHERE isDeleted = 0 AND department_name = ?";
-    db.query(sql, ["School of Business and Arts"], (err, results) => {
-        if (err) return res.status(500).json(err);
-        res.json(results);
-    });
-});
-
-// Get all programs for School of Design and the Arts
-router.get("/design-arts", (req, res) => {
-    const sql = "SELECT * FROM programs WHERE isDeleted = 0 AND department_name = ?";
-    db.query(sql, ["School of Design and the Arts"], (err, results) => {
-        if (err) return res.status(500).json(err);
-        res.json(results);
-    });
-});
-
-// Get all programs for Senior High School
-router.get("/senior-high", (req, res) => {
-    const sql = "SELECT * FROM programs WHERE isDeleted = 0 AND department_name = ?";
-    db.query(sql, ["Senior High School"], (err, results) => {
-        if (err) return res.status(500).json(err);
-        res.json(results);
-    });
-});
 
 // Delete Program (including Image)
 router.delete("/:id", (req, res) => {

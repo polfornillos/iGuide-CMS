@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handleProgramNameState() {
         if (departmentSelect.value === 'Senior High School') {
+            programSelect.value = '';
             programSelect.disabled = true; 
         } else {
             programSelect.disabled = false;
@@ -309,7 +310,7 @@ function handleProgramSubmission(action) {
     let inputElements = [
         { element: coverImage, id: isEdit ? "editCoverImage" : "coverImage", required: !isEdit }, 
         { element: departmentName, id: isEdit ? "editDepartmentName" : "departmentName" }, 
-        { element: programName, id: isEdit ? "editProgramName" : "programName" }, 
+        { element: programName, id: isEdit ? "editProgramName" : "programName", required: departmentName !== "Senior High School" }, 
         { element: programSpecialization, id: isEdit ? "editProgramSpecialization" : "programSpecialization" }, 
         { element: programDescription, id: isEdit ? "editProgramDescription" : "programDescription" }, 
         { element: numberOfTerms, id: isEdit ? "editNumberOfTerms" : "numberOfTerms" }, 
@@ -323,7 +324,7 @@ function handleProgramSubmission(action) {
 
     // Validation
     inputElements.forEach(({ element, id, required = true }) => {
-        if (required && !element) {
+        if (required && (!element || element.length === 0)) {
             showError(document.getElementById(id), "This field is required.");
             isValid = false;
         }
@@ -360,8 +361,17 @@ function handleProgramSubmission(action) {
                 showConfirmButton: false
             }).then(() => {
                 fetchPrograms(); // Refresh program list
+                
                 if (isEdit) {
-                    document.getElementById("editProgramModal").querySelector(".btn-close").click();
+                    let modal = document.getElementById("editProgramModal");
+                    let bootstrapModal = bootstrap.Modal.getInstance(modal);
+                    if (bootstrapModal) bootstrapModal.hide(); // Properly hide the modal
+
+                    // Remove the modal backdrop manually
+                    let modalBackdrop = document.querySelector(".modal-backdrop");
+                    if (modalBackdrop) modalBackdrop.remove();
+                    
+                    document.body.classList.remove("modal-open"); // Remove modal open class
                 } else {
                     location.reload();
                 }
