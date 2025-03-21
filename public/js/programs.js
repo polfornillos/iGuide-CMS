@@ -360,21 +360,8 @@ function handleProgramSubmission(action) {
                 timer: 1500,
                 showConfirmButton: false
             }).then(() => {
-                fetchPrograms(); // Refresh program list
-                
-                if (isEdit) {
-                    let modal = document.getElementById("editProgramModal");
-                    let bootstrapModal = bootstrap.Modal.getInstance(modal);
-                    if (bootstrapModal) bootstrapModal.hide(); // Properly hide the modal
-
-                    // Remove the modal backdrop manually
-                    let modalBackdrop = document.querySelector(".modal-backdrop");
-                    if (modalBackdrop) modalBackdrop.remove();
-                    
-                    document.body.classList.remove("modal-open"); // Remove modal open class
-                } else {
-                    location.reload();
-                }
+                fetchPrograms(); // Refresh program list     
+                location.reload();
             });
         }
     })
