@@ -15,7 +15,6 @@ const programsRoutes = require('./routes/programsRoutes');
 const partnersRoutes = require('./routes/partnersRoutes');
 const videosRoutes = require('./routes/videosRoutes');
 
-
 // Use routes
 app.use('/news', newsRoutes);
 app.use('/artworks', artworkRoutes);

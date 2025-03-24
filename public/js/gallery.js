@@ -145,11 +145,11 @@ function attachDeleteEvents() {
 function attachArchiveEvents() {
     document.querySelectorAll(".archive-btn").forEach(button => {
         button.addEventListener("click", function () {
-            let newsId = this.getAttribute("data-id");
+            let artworkId = this.getAttribute("data-id");
             let currentStatus = this.getAttribute("data-isDeleted");
             let newStatus = currentStatus === "1" ? 0 : 1;
 
-            fetch(`http://localhost:5000/artworks/${newsId}/archive`, {
+            fetch(`http://localhost:5000/artworks/${artworkId}/archive`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ isDeleted: newStatus })
