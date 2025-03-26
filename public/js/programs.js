@@ -199,7 +199,7 @@ function attachEditEvents() {
         button.addEventListener("click", function () {
             let programId = this.getAttribute("data-id");
 
-            fetch(`http://localhost:5000/programs/${programId}`)
+            fetch(`http://localhost:5000/programs/id/${programId}`)
                 .then(response => response.json())
                 .then(program => {
                     document.getElementById("editProgramId").value = program.id;
