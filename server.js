@@ -24,4 +24,5 @@ app.use('/videos', videosRoutes);
 
 app.listen(5000, () => {
     console.log('Server running on port 5000');
+    console.log("\x1b[36m%s\x1b[0m", "Open: http://localhost:5000/News.html");
 });
