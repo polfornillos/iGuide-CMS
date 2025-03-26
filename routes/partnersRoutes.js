@@ -1,8 +1,4 @@
-const express = require("express");
-const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
-const db = require("../config/db");
+const { express, multer, path, fs, db } = require("../config/dependencies");
 
 const router = express.Router();
 
