@@ -155,7 +155,11 @@ router.put("/:id", upload.single("artwork"), (req, res) => {
             if (studentResults.length > 0) {
                 // Student already exists, use their ID
                 const existing_student_id = studentResults[0].id;
-                updateArtwork(existing_student_id);
+                const updateStudentSql = "UPDATE students SET student_name = ?, facebook_link = ?, twitter_link = ?, instagram_link = ? WHERE id = ?"
+                db.query(updateStudentSql, [student_name, facebook_link, twitter_link, instagram_link, current_student_id], (err) => {
+                    if (err) return res.status(500).json({ message: "Failed to update student details." });
+                    updateArtwork(existing_student_id);
+                });
             } else {
                 // Student does not exist, update current student details
                 const updateStudentSql = "UPDATE students SET student_name = ?, facebook_link = ?, twitter_link = ?, instagram_link = ? WHERE id = ?";
